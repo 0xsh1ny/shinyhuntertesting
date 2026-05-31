@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DBMS Study Guide — BCA IV Sem</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0f0f1a;
+    --card: #1a1a2e;
+    --card2: #16213e;
+    --gold: #ffd700;
+    --gold2: #ffb300;
+    --text: #e8e8e0;
+    --muted: #888;
+    --u1: #4fc3f7;
+    --u2: #ce93d8;
+    --u3: #a5d6a7;
+    --u4: #ffb74d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    padding: 20px 16px 60px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0d1b4b 50%, #1a1a2e 100%);
+    border: 1px solid #ffd70033;
+    border-radius: 18px;
+    padding: 32px 24px;
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #ffd70015, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-tag { font-size: 10px; color: var(--gold); letter-spacing: 3px; margin-bottom: 10px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+  .hero-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .badge { background: #ffd70018; border: 1px solid #ffd70055; color: var(--gold); border-radius: 20px; padding: 4px 14px; font-size: 11px; }
+
+  /* Section headers */
+  .sec-header {
+    background: var(--card);
+    border-left: 4px solid var(--gold);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 14px;
+  }
+  .sec-header .label { font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-bottom: 4px; }
+  .sec-header h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; }
+  .sec-header .marks { font-size: 12px; color: var(--gold); margin-top: 4px; }
+
+  /* Unit header */
+  .unit-header {
+    border-radius: 8px;
+    padding: 10px 18px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Accordion */
+  .accordion { margin-bottom: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #ffffff11; }
+  .acc-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acc-header:active { opacity: 0.85; }
+  .acc-num {
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    white-space: nowrap;
+    margin-top: 2px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .acc-title { flex: 1; font-weight: 600; font-size: 14px; line-height: 1.5; }
+  .acc-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+  .tag-marks { border-radius: 5px; padding: 2px 8px; font-size: 10px; font-weight: 700; }
+  .tag-ref { background: #ffffff11; color: #aaa; border-radius: 5px; padding: 2px 8px; font-size: 10px; }
+  .acc-arrow { font-size: 14px; margin-top: 2px; transition: transform 0.2s; }
+  .acc-body { display: none; border-top: 1px solid #ffffff11; }
+  .acc-body.open { display: block; }
+
+  /* Q&A inside topic */
+  .qa-item { border-top: 1px solid #ffffff08; }
+  .qa-q {
+    padding: 12px 18px;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: #ffffff04;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .qa-q:active { opacity: 0.8; }
+  .q-label { font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 5px; white-space: nowrap; margin-top: 2px; }
+  .qa-qtext { flex: 1; font-size: 13px; font-weight: 600; color: #ddd; line-height: 1.5; }
+  .qa-arrow { color: #666; font-size: 13px; margin-top: 2px; }
+  .qa-answer { display: none; padding: 16px 18px; background: #0a0a18; }
+  .qa-answer.open { display: block; }
+  .answer-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; margin-bottom: 12px; }
+  .answer-text {
+    font-size: 13px;
+    line-height: 1.95;
+    color: #ccc;
+    white-space: pre-wrap;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+
+  /* Table styling */
+  .answer-text table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  .answer-text th { background: #ffffff15; color: var(--gold); padding: 8px 10px; text-align: left; border: 1px solid #ffffff15; }
+  .answer-text td { padding: 7px 10px; border: 1px solid #ffffff10; color: #ccc; vertical-align: top; }
+  .answer-text tr:nth-child(even) td { background: #ffffff05; }
+
+  /* Code blocks */
+  .answer-text code, .code-block {
+    background: #0d1b2a;
+    border: 1px solid #ffffff15;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #80cbc4;
+  }
+  pre.code-block {
+    padding: 12px 14px;
+    margin: 10px 0;
+    overflow-x: auto;
+    line-height: 1.6;
+    white-space: pre;
+  }
+
+  .strategy-box {
+    background: linear-gradient(135deg, #1a1a2e, #0d1b4b);
+    border: 1px solid #ffd70044;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 24px;
+    text-align: center;
+  }
+  .strategy-box h3 { color: var(--gold); font-size: 13px; letter-spacing: 2px; margin-bottom: 10px; }
+  .strategy-box p { font-size: 13px; color: #bbb; line-height: 1.8; }
+
+  @media(max-width:480px) {
+    .hero h1 { font-size: 22px; }
+    .acc-title { font-size: 13px; }
+    .answer-text { font-size: 12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">BCA IV SEMESTER • EXAM PREP 2025</div>
+  <h1>DBMS Complete Study Guide</h1>
+  <div class="hero-sub">Database Management System (BCA-23-202) • 75 Marks • 3 Hours</div>
+  <div class="badges">
+    <span class="badge">Part A: 15 marks (all compulsory)</span>
+    <span class="badge">Part B: 60 marks (4 of 6)</span>
+    <span class="badge">Total: 75 marks</span>
+  </div>
+</div>
+
+<!-- PART A -->
+<div class="sec-header">
+  <div class="label">COMPULSORY — ALL 10 QUESTIONS</div>
+  <h2>PART-A Short Answers</h2>
+  <div class="marks">1.5 marks each × 10 = 15 marks</div>
+</div>
+
+<div id="parta"></div>
+
+<!-- PART B -->
+<div class="sec-header" style="margin-top:32px; border-left-color:#ff6b35;">
+  <div class="label">ATTEMPT ANY 4 OUT OF 6</div>
+  <h2>PART-B Long Answers</h2>
+  <div class="marks" style="color:#ff6b35;">15 marks each × 4 = 60 marks</div>
+</div>
+
+<div id="partb"></div>
+
+<div class="strategy-box">
+  <h3>⚡ EXAM STRATEGY</h3>
+  <p>Part-A: attempt all 10 short answers &nbsp;•&nbsp; Part-B: do E-R Diagram + Relational Algebra + Normalization + any one of (Conflict Serializability / Concurrency / Distributed DB)</p>
+</div>
+
+<script>
+const partAData = [
+  {
+    q: "What do you mean by system log?",
+    a: `A system log (also called a database log or transaction log) is a sequential file that records all changes made to the database.
+
+It keeps track of all transaction operations — BEGIN, READ, WRITE, COMMIT, ABORT.
+
+It is used for RECOVERY: if a failure occurs, the system uses the log to:
+• UNDO uncommitted transactions (roll them back)
+• REDO committed transactions (replay them)
+
+Each log record contains:
+• Transaction ID
+• Type of operation
+• Data item name
+• Old value (before image)
+• New value (after image)`
+  },
+  {
+    q: "What is a composite attribute? Give examples.",
+    a: `A composite attribute is an attribute that can be divided into smaller sub-parts, each representing a more basic attribute with independent meaning.
+
+Unlike simple (atomic) attributes, composite attributes have meaningful components.
+
+Examples:
+• Name → FirstName, MiddleName, LastName
+• Address → Street, City, State, PinCode
+• Date → Day, Month, Year
+• Date of Birth → DD, MM, YYYY
+
+In ER diagrams, composite attributes are shown as ellipses connected to a parent ellipse.`
+  },
+  {
+    q: "What is Lossless Join property?",
+    a: `Lossless join (also called non-additive join) is a property of database decomposition.
+
+A decomposition of relation R into R1 and R2 is LOSSLESS if:
+When we natural join R1 and R2, we get back the EXACT original relation R — no spurious (extra/wrong) tuples are generated.
+
+Condition for lossless join:
+The common attribute(s) between R1 and R2 must be a candidate key in at least one of them.
+
+Example:
+R(A, B, C) decomposed into R1(A, B) and R2(B, C)
+If B is a key in R2, then R1 ⋈ R2 = R → Lossless ✓
+If B is not a key in either, extra tuples may appear → Lossy ✗`
+  },
+  {
+    q: "What do you mean by trivial dependency?",
+    a: `A functional dependency X → Y is called TRIVIAL if Y is a subset of X (Y ⊆ X).
+
+It is "trivial" because it is ALWAYS satisfied — it gives no new information.
+
+Examples of trivial FDs:
+• {StudentID, Name} → {StudentID}  (trivial — StudentID is already in LHS)
+• {A, B} → {A}  (trivial)
+• {A, B} → {A, B}  (trivial)
+
+Non-trivial FD:
+• X → Y where Y has at least one attribute NOT in X
+• Example: StudentID → Name  (non-trivial — Name is not in {StudentID})
+
+Completely non-trivial:
+• X → Y where Y ∩ X = ∅ (no common attributes)`
+  },
+  {
+    q: "What are the unary operations in Relational Algebra?",
+    a: `Unary operations in relational algebra work on a SINGLE relation (one input table only).
+
+There are TWO unary operations:
+
+1. SELECT (σ — sigma)
+   • Filters ROWS based on a condition
+   • Output: subset of tuples satisfying the condition
+   • Example: σ age>25 (Employee)  → all employees older than 25
+   • Example: σ office='Delhi' (Employee)  → employees in Delhi
+
+2. PROJECT (π — pi)
+   • Selects specific COLUMNS, removes others
+   • Output: relation with only the specified attributes
+   • Duplicates are automatically removed
+   • Example: π name,age (Employee)  → only name and age columns
+   • Example: π title (Books)  → only book titles
+
+Both operations take ONE relation as input and produce ONE relation as output.`
+  },
+  {
+    q: "What do you mean by cardinality? What are different kinds of cardinalities?",
+    a: `Cardinality defines the number of instances of one entity that can be associated with instances of another entity through a relationship.
+
+Types of Cardinality:
+
+1. ONE-TO-ONE (1:1)
+   • One entity A is related to exactly one entity B, and vice versa
+   • Example: One person has one passport; one country has one capital
+
+2. ONE-TO-MANY (1:N)
+   • One entity A is related to many entities B
+   • But each B is related to only one A
+   • Example: One department has many employees; one teacher has many students
+
+3. MANY-TO-ONE (N:1)
+   • Many entities A are related to one entity B
+   • Reverse of 1:N
+
+4. MANY-TO-MANY (M:N)
+   • Many entities A are related to many entities B
+   • Example: Students and courses (one student takes many courses; one course has many students)`
+  },
+  {
+    q: "What are participation constraints in a relationship in the ER model?",
+    a: `Participation constraints specify whether the existence of an entity depends on it being related to another entity via a relationship.
+
+Two types:
+
+1. TOTAL PARTICIPATION (Mandatory Participation)
+   • EVERY entity in the entity set MUST participate in at least one relationship instance
+   • Shown by a DOUBLE LINE in the ER diagram
+   • Example: Every employee must work for a department (an employee cannot exist without belonging to a department)
+   • Example: Every order must have a customer
+
+2. PARTIAL PARTICIPATION (Optional Participation)
+   • Some entities MAY NOT participate in any relationship instance
+   • Shown by a SINGLE LINE in the ER diagram
+   • Example: Not every employee manages a department
+   • Example: Not every customer has placed an order
+
+Participation constraints are important for integrity — they define mandatory vs optional relationships.`
+  },
+  {
+    q: "What is a timestamp in concurrency control?",
+    a: `A timestamp is a UNIQUE identifier assigned to each transaction when it starts, used to order transactions.
+
+It represents the time at which a transaction began execution.
+
+Can be implemented as:
+• System clock value (real time)
+• Logical counter (incremented for each new transaction)
+
+How it's used in Timestamp-Based Concurrency Control:
+• Each data item Q has two timestamps:
+  - read_TS(Q) — timestamp of the last transaction that READ Q
+  - write_TS(Q) — timestamp of the last transaction that WROTE Q
+
+• Rules:
+  - If Ti tries to READ Q and TS(Ti) < write_TS(Q) → Ti is too old, ROLLBACK Ti
+  - If Ti tries to WRITE Q and TS(Ti) < read_TS(Q) → ROLLBACK Ti
+  - Otherwise, allow the operation and update timestamps
+
+This ensures transactions execute as if they ran in timestamp order — guaranteeing serializability.`
+  },
+  {
+    q: "What is the purpose of GROUP BY clause in the SELECT statement?",
+    a: `The GROUP BY clause in SQL is used to ARRANGE rows with the same values in specified columns into GROUPS.
+
+Purpose:
+• Divides the result set into groups based on one or more columns
+• Used with AGGREGATE FUNCTIONS to compute a value per group
+
+Aggregate functions used with GROUP BY:
+• COUNT() — counts rows in each group
+• SUM() — sum of values per group
+• AVG() — average per group
+• MAX() — maximum value per group
+• MIN() — minimum value per group
+
+Example:
+SELECT publisher, COUNT(*) AS total_books
+FROM Books
+GROUP BY publisher;
+→ Returns the number of books for each publisher
+
+Example 2:
+SELECT office, AVG(age) AS avg_age
+FROM Employee
+GROUP BY office;
+→ Returns average age of employees per office
+
+HAVING clause:
+• Used to FILTER groups (like WHERE filters rows)
+• Example: HAVING COUNT(*) > 5 → only groups with more than 5 books`
+  },
+  {
+    q: "Write any two Armstrong's inference rules.",
+    a: `Armstrong's inference rules are a complete and sound set of axioms used to derive ALL functional dependencies from a given set.
+
+RULE 1 — REFLEXIVITY (Trivial Rule):
+• If Y ⊆ X, then X → Y
+• A set always determines any of its subsets
+• Example: {StudentID, Name} → {Name}
+• Example: {A, B, C} → {A, B}
+
+RULE 2 — AUGMENTATION:
+• If X → Y, then XZ → YZ (for any Z)
+• Adding the same attributes to both sides preserves the dependency
+• Example: If EmpID → Name, then {EmpID, Dept} → {Name, Dept}
+
+RULE 3 — TRANSITIVITY (bonus, often asked):
+• If X → Y and Y → Z, then X → Z
+• Example: If EmpID → DeptID and DeptID → DeptName, then EmpID → DeptName
+
+Additional derived rules:
+• Union: If X→Y and X→Z then X→YZ
+• Decomposition: If X→YZ then X→Y and X→Z
+• Pseudotransitivity: If X→Y and WY→Z then WX→Z`
+  }
+];
+
+const partBData = [
+  {
+    unit: "Unit I",
+    color: "#4fc3f7",
+    topics: [
+      {
+        title: "DBMS Users & Types",
+        marks: "10 marks",
+        tag: "Q2a — 2025",
+        qa: [
+          {
+            q: "Define DBMS users and explain the different types of users in a database system.",
+            a: `A Database Management System (DBMS) is software that manages databases. Different categories of people interact with a DBMS — these are called DBMS users.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. DATABASE ADMINISTRATOR (DBA)
+• The most powerful user with full control over the database
+• Responsibilities: creating schemas, granting permissions, managing storage, performance tuning, backup & recovery
+• Controls who can access what data
+• Example: IT head managing a university database
+
+2. DATABASE DESIGNERS
+• Responsible for identifying what data to store and choosing appropriate structures
+• They work before the database is built/populated
+• Decide on entities, relationships, constraints
+
+3. END USERS — people who use the database day-to-day:
+
+   a) Casual End Users
+      • Access the DB occasionally using query tools
+      • Example: Managers generating reports
+
+   b) Naive / Parametric Users
+      • Use pre-built apps repeatedly without knowing SQL
+      • Example: Bank tellers, ticket booking staff, cashiers
+
+   c) Sophisticated Users
+      • Write their own SQL queries for complex analysis
+      • Example: Engineers, data analysts, scientists
+
+   d) Standalone Users
+      • Use personal databases with ready-made packages
+      • Example: Personal finance app user
+
+4. SYSTEM ANALYSTS
+• Determine end-user requirements
+• Specify transactions to meet those needs
+• Bridge between users and developers
+
+5. APPLICATION PROGRAMMERS / SOFTWARE ENGINEERS
+• Write programs in Java, Python, etc. that interact with the DB
+• Use SQL embedded in code (JDBC, ODBC)
+• Example: Developer who builds a college admission portal
+
+6. DBMS DESIGNERS AND IMPLEMENTERS
+• People who design and build the DBMS software itself
+• Example: Oracle, MySQL developers
+
+7. TOOL DEVELOPERS
+• Develop tools like data loaders, performance monitors, report generators
+
+8. OPERATORS AND MAINTENANCE PERSONNEL
+• Responsible for running the hardware and software environment`
+          }
+        ]
+      },
+      {
+        title: "Three-Schema Architecture",
+        marks: "5 marks",
+        tag: "Q3b — 2025",
+        qa: [
+          {
+            q: "Describe the Three-Schema Architecture in detail.",
+            a: `The Three-Schema Architecture (ANSI/SPARC architecture) separates the user's view of the database from the physical storage. It has THREE levels:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LEVEL 1 — INTERNAL LEVEL (Physical Schema)
+• Describes HOW data is physically stored on disk
+• Deals with: storage structures, file organizations, indexes, access paths
+• Lowest level — closest to actual hardware
+• Example: Data stored as B+ tree index on hard disk sectors
+
+LEVEL 2 — CONCEPTUAL LEVEL (Conceptual Schema)
+• Describes WHAT data is stored and relationships among data
+• Hides physical storage details
+• Describes: entities, attributes, constraints, relationships
+• This is the DBA's view — represents the whole database
+• Example: Tables like Student(RollNo, Name, Age), Course(CourseID, Title)
+
+LEVEL 3 — EXTERNAL LEVEL (View Level / External Schema)
+• Describes HOW different users SEE the data
+• Different user groups see different subsets (views) of the database
+• Highest level — closest to end users
+• Example: A student sees only their marks; a teacher sees all students' marks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DIAGRAM:
+External Level   →  View 1 | View 2 | View 3
+                          ↕ mapping
+Conceptual Level →  Conceptual Schema
+                          ↕ mapping
+Internal Level   →  Internal Schema
+                          ↓
+                   Physical Database
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DATA INDEPENDENCE (main goal of this architecture):
+
+• Logical Data Independence:
+  Ability to change the conceptual schema without changing external schemas (views)
+  Example: Adding a new table doesn't break existing user views
+
+• Physical Data Independence:
+  Ability to change the internal schema without changing the conceptual schema
+  Example: Changing from sequential file to B+ tree doesn't affect the logical design`
+          }
+        ]
+      },
+      {
+        title: "Components & Functions of DBMS",
+        marks: "5–10 marks",
+        tag: "Short / Part question",
+        qa: [
+          {
+            q: "What are the main components and functions of a DBMS?",
+            a: `COMPONENTS OF A DBMS:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. QUERY PROCESSOR
+   • Interprets and compiles database queries (DDL, DML)
+   • Sub-components:
+     - DDL Compiler: processes DDL commands (CREATE, DROP)
+     - DML Compiler: processes DML commands (SELECT, INSERT)
+     - Query Optimizer: finds the most efficient way to execute queries
+     - Runtime Database Processor: executes operations
+
+2. STORAGE MANAGER
+   • Manages data storage on disk
+   • Sub-components:
+     - Authorization & Integrity Manager
+     - Transaction Manager
+     - File Manager
+     - Buffer Manager (manages data in memory)
+
+3. DATA DICTIONARY / SYSTEM CATALOG
+   • Stores METADATA — information about the database structure
+   • Contains: table names, column names, data types, constraints, user permissions
+
+4. DATA FILES
+   • Where actual data is physically stored on disk
+
+5. INDEXES
+   • Speed up data retrieval (like a book index)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FUNCTIONS OF A DBMS:
+
+1. Data Definition — Create, modify, delete structures using DDL
+2. Data Manipulation — Insert, update, delete, retrieve data using DML
+3. Data Security — Controls who can access what data
+4. Data Integrity — Enforces rules/constraints to maintain accuracy
+5. Concurrency Control — Manages simultaneous access by multiple users
+6. Backup & Recovery — Restores database after failure
+7. Data Independence — Separates programs from data structure
+8. Transaction Management — Ensures ACID properties`
+          }
+        ]
+      }
+    ]
+  },
+  {
+    unit: "Unit II",
+    color: "#ce93d8",
+    topics: [
+      {
+        title: "E-R Diagram — Banking / Library / Hospital",
+        marks: "10 marks",
+        tag: "Q3a — 2025 | ALWAYS COMES",
+        qa: [
+          {
+            q: "Draw an E-R diagram for a Banking Management System assuming essential entities and relationships.",
+            a: `E-R DIAGRAM — BANKING MANAGEMENT SYSTEM
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ENTITIES AND THEIR ATTRIBUTES:
+
+CUSTOMER
+• CustID (PK — underlined)
+• Name (composite: FirstName, LastName)
+• Address (composite: Street, City, Pin)
+• Phone (multivalued — double ellipse)
+• DateOfBirth
+• Age (derived — dashed ellipse, derived from DOB)
+
+ACCOUNT
+• AccNo (PK)
+• Type (Savings/Current)
+• Balance
+
+BRANCH
+• BranchID (PK)
+• BranchName
+• City
+• Assets
+
+LOAN
+• LoanNo (PK)
+• Amount
+• Type (Home/Car/Personal)
+• Duration
+
+EMPLOYEE
+• EmpID (PK)
+• Name
+• Salary
+• Position
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RELATIONSHIPS:
+
+HAS (Customer — Account)
+• Cardinality: M:N (one customer can have many accounts; one account can belong to multiple customers — joint account)
+• Participation: Total on Account side (every account must have a customer)
+
+HOLDS (Customer — Loan)
+• Cardinality: M:N
+• A customer can have many loans; a loan can be held by many customers (co-borrowers)
+
+MANAGES (Branch — Account)
+• Cardinality: 1:N (one branch manages many accounts)
+• Total participation on Account side
+
+OFFERS (Branch — Loan)
+• Cardinality: 1:N (one branch offers many loans)
+
+WORKS_AT (Employee — Branch)
+• Cardinality: N:1 (many employees work at one branch)
+• Total participation on Employee side
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ER NOTATION TO DRAW:
+
+Rectangle          = Entity
+Ellipse            = Attribute
+Underlined name    = Primary key attribute
+Double ellipse     = Multivalued attribute
+Dashed ellipse     = Derived attribute
+Diamond            = Relationship
+Double rectangle   = Weak entity
+Double line        = Total participation
+Single line        = Partial participation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LIBRARY SYSTEM (alternative if asked):
+
+Entities:
+• BOOK (ISBN, Title, Authors, Publisher, Year)
+• MEMBER (MemberID, Name, Address, Phone)
+• LIBRARIAN (EmpID, Name)
+
+Relationships:
+• BORROWS (Member–Book): M:N, with attribute: BorrowDate, ReturnDate
+• MANAGES (Librarian–Book): 1:N
+• ISSUES (Librarian–Member): 1:N`
+          }
+        ]
+      },
+      {
+        title: "ER Concepts — Keys, Attributes, Relationships",
+        marks: "Short answers",
+        tag: "Part-A likely",
+        qa: [
+          {
+            q: "Explain entity types, attributes, relationship types, and keys in the ER model.",
+            a: `ENTITY:
+A real-world object distinguishable from other objects. Has independent existence.
+Example: Student, Employee, Car, Book
+
+ENTITY TYPE:
+A collection of entities that share the same attributes.
+Example: STUDENT is an entity type (all students share RollNo, Name, Age)
+
+ENTITY SET:
+The current set of all entity instances in the database at a given time.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPES OF ATTRIBUTES:
+
+Simple (Atomic):   Cannot be divided. E.g., Age, Gender, EmpID
+
+Composite:         Can be divided. E.g., Name → FirstName, LastName
+                   Address → Street, City, Pin
+
+Multivalued:       Can have multiple values. E.g., Phone Numbers, Skills
+                   Shown with DOUBLE ELLIPSE
+
+Derived:           Value computed from another attribute. E.g., Age from DOB
+                   Shown with DASHED ELLIPSE
+
+Key Attribute:     Uniquely identifies each entity. E.g., RollNo, EmpID
+                   Shown with UNDERLINED name
+
+Null Attribute:    Can have null/unknown value
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPES OF KEYS:
+
+Super Key:         Any set of attributes that uniquely identifies a tuple
+                   Example: {EmpID}, {EmpID, Name}, {EmpID, Name, Age}
+
+Candidate Key:     Minimal super key (no redundant attributes)
+                   Example: {EmpID} is candidate key; {EmpID, Name} is not (Name is extra)
+
+Primary Key:       The chosen candidate key used to identify records
+
+Foreign Key:       Attribute in one table that references PK of another table
+                   Enforces referential integrity
+
+Composite Key:     A key made of two or more attributes
+                   Example: (StudentID, CourseID) in an Enrollment table
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WEAK ENTITY:
+• Cannot be uniquely identified by its own attributes alone
+• Depends on a strong (owner) entity
+• Shown with DOUBLE RECTANGLE
+• Example: DEPENDENT depends on EMPLOYEE
+• Has a partial key (discriminator) — shown with dashed underline`
+          }
+        ]
+      }
+    ]
+  },
+  {
+    unit: "Unit III",
+    color: "#a5d6a7",
+    topics: [
+      {
+        title: "Relational Algebra Queries",
+        marks: "10 marks",
+        tag: "Q5a — 2025 | ALWAYS COMES",
+        qa: [
+          {
+            q: "Write relational algebra queries on given schemas. (Employee, Books, Loan — from 2025 paper)",
+            a: `GIVEN SCHEMA (from 2025 paper):
+• Employee (empno, name, office, age)
+• Books (isbn, title, authors, publisher)
+• Loan (empno, isbn, date)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY OPERATIONS:
+
+σ (sigma)   = SELECT — filter rows by condition
+π (pi)      = PROJECT — select specific columns
+⋈           = NATURAL JOIN — join on common attribute
+×           = CARTESIAN PRODUCT — all combinations
+∪           = UNION — all rows from both (same schema)
+−           = DIFFERENCE — rows in first but not second
+÷           = DIVISION — for "all" type queries
+G           = GROUP BY with aggregate function
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUERY 1: Find names of employees who borrowed a book published by XYZ Ltd.
+
+Step 1: Get books by XYZ Ltd → σ publisher='XYZ Ltd' (Books)
+Step 2: Join with Loan → ... ⋈ Loan
+Step 3: Join with Employee → ... ⋈ Employee
+Step 4: Project name → π name (...)
+
+FINAL:
+π name ( σ publisher='XYZ Ltd' (Books) ⋈ Loan ⋈ Employee )
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUERY 2: Find names of employees who borrowed ALL books published by XYZ Ltd.
+(Uses DIVISION — for "all" queries)
+
+T1 ← π empno,isbn (Loan ⋈ Employee)
+T2 ← π isbn ( σ publisher='XYZ Ltd' (Books) )
+T3 ← T1 ÷ T2
+π name (T3 ⋈ Employee)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUERY 3: Find names of employees who borrowed more than 5 books published by XYZ Ltd.
+
+T1 ← π empno,isbn ( Loan ⋈ σ publisher='XYZ Ltd' (Books) )
+T2 ← empno G COUNT(isbn) AS cnt (T1)
+T3 ← σ cnt>5 (T2)
+π name (T3 ⋈ Employee)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUERY 4: For each publisher, find employees who borrowed more than 5 books of that publisher.
+
+T1 ← Loan ⋈ Books ⋈ Employee
+T2 ← empno,publisher G COUNT(isbn) AS cnt (T1)
+T3 ← σ cnt>5 (T2)
+π name,publisher (T3 ⋈ Employee)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EXTRA PRACTICE QUERIES:
+
+Find all employees in office 'Delhi':
+σ office='Delhi' (Employee)
+
+Find names and ages of all employees:
+π name,age (Employee)
+
+Find employees who have NOT taken any loan:
+π empno (Employee) − π empno (Loan)
+
+Find employees older than 30 who work in Mumbai:
+σ age>30 AND office='Mumbai' (Employee)`
+          }
+        ]
+      },
+      {
+        title: "Tuple & Domain Relational Calculus",
+        marks: "Short / Part question",
+        tag: "Part-A or small part",
+        qa: [
+          {
+            q: "What is Tuple Relational Calculus and Domain Relational Calculus?",
+            a: `Relational Calculus is a NON-PROCEDURAL query language — you specify WHAT you want, not HOW to get it. (Unlike relational algebra which is procedural.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TUPLE RELATIONAL CALCULUS (TRC):
+
+• Variables represent TUPLES (entire rows)
+• General form: { t | P(t) } — set of all tuples t that satisfy condition P
+
+Quantifiers used:
+• ∃ (Existential) — "there exists"
+• ∀ (Universal) — "for all"
+
+Example 1: Find names of employees in Delhi:
+{ t.name | Employee(t) AND t.office = 'Delhi' }
+
+Example 2: Find names of employees who borrowed some book:
+{ t.name | Employee(t) AND ∃l (Loan(l) AND l.empno = t.empno) }
+
+Example 3: Find names of employees who borrowed ALL books by XYZ:
+{ t.name | Employee(t) AND ∀b (Books(b) AND b.publisher='XYZ' → ∃l (Loan(l) AND l.empno=t.empno AND l.isbn=b.isbn)) }
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DOMAIN RELATIONAL CALCULUS (DRC):
+
+• Variables represent DOMAIN VALUES (individual attribute values)
+• General form: { <x1, x2,...> | P(x1, x2,...) }
+
+Example: Find names of employees in Delhi:
+{ <n> | ∃e,o,a ( <e,n,o,a> ∈ Employee AND o = 'Delhi' ) }
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DIFFERENCE BETWEEN TRC AND DRC:
+
+TRC:
+• Variables are tuples (full rows)
+• Closer to SQL style
+• More natural for most queries
+
+DRC:
+• Variables are individual attribute values
+• Basis of QBE (Query by Example) — used in spreadsheet-style DB tools
+• More fine-grained control
+
+Both TRC and DRC are equivalent in expressive power to Relational Algebra.`
+          }
+        ]
+      }
+    ]
+  },
+  {
+    unit: "Unit IV",
+    color: "#ffb74d",
+    topics: [
+      {
+        title: "Normalization — 1NF to BCNF",
+        marks: "5 marks",
+        tag: "Q5b — 2025",
+        qa: [
+          {
+            q: "What do you mean by BCNF? How is it different from 3NF? Explain normalization from 1NF to BCNF.",
+            a: `NORMALIZATION is the process of organizing a database to reduce redundancy and improve data integrity by applying rules called Normal Forms.
+
+FUNCTIONAL DEPENDENCY (FD):
+X → Y means if two tuples have the same value of X, they must have the same value of Y.
+"X functionally determines Y"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1NF — FIRST NORMAL FORM:
+
+Rules:
+• All attribute values must be ATOMIC (indivisible)
+• No repeating groups, no arrays, no nested tables
+• Each row must be unique (have a primary key)
+
+Violation example:
+Student(RollNo, Name, Phones={9876, 8765}) — multivalued, NOT 1NF
+
+Fix: Create separate row for each phone number, or separate Phone table
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2NF — SECOND NORMAL FORM:
+
+Rules:
+• Must be in 1NF
+• NO PARTIAL DEPENDENCY — every non-key attribute must depend on the WHOLE primary key (not part of it)
+• Only matters when primary key is composite
+
+Violation example:
+Enrollment(StudentID, CourseID, StudentName, Grade)
+PK = (StudentID, CourseID)
+StudentName depends only on StudentID → partial dependency! ✗
+
+Fix: 
+Student(StudentID, StudentName)
+Enrollment(StudentID, CourseID, Grade)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3NF — THIRD NORMAL FORM:
+
+Rules:
+• Must be in 2NF
+• NO TRANSITIVE DEPENDENCY — non-key attribute should not depend on another non-key attribute
+• For every FD X → Y: either X is a super key OR Y is a prime attribute (part of some candidate key)
+
+Violation example:
+Employee(EmpID, DeptID, DeptName)
+EmpID → DeptID → DeptName  ← transitive! DeptName depends on DeptID, not directly on EmpID
+
+Fix:
+Employee(EmpID, DeptID)
+Department(DeptID, DeptName)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BCNF — BOYCE-CODD NORMAL FORM:
+
+Rules:
+• Must be in 3NF
+• STRICTER than 3NF
+• For every FD X → Y: X MUST BE A SUPER KEY (no exceptions)
+
+Difference from 3NF:
+3NF allows X → Y even if X is not a super key, as long as Y is a prime attribute
+BCNF does NOT allow this
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3NF vs BCNF COMPARISON:
+
+3NF:
+• X → Y allowed if Y is prime attribute (even if X is not super key)
+• Less strict
+• Lossless + dependency-preserving decomposition always possible
+• Every BCNF relation is in 3NF
+
+BCNF:
+• X → Y only allowed if X is super key
+• More strict (stronger condition)
+• Dependency-preserving decomposition may NOT always be possible
+• A 3NF relation may NOT be in BCNF
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EXAMPLE WHERE 3NF ≠ BCNF:
+
+Relation: (Student, Subject, Teacher)
+FDs:
+• (Student, Subject) → Teacher
+• Teacher → Subject
+
+Candidate Keys: (Student, Subject) and (Student, Teacher)
+Prime attributes: Student, Subject, Teacher (all!)
+
+In 3NF? YES ✓ (Teacher → Subject: Teacher is not super key, but Subject is prime)
+In BCNF? NO ✗ (Teacher → Subject: Teacher is NOT a super key)
+
+Fix for BCNF:
+R1(Teacher, Subject)
+R2(Student, Teacher)`
+          }
+        ]
+      },
+      {
+        title: "Conflict Serializability",
+        marks: "10 marks",
+        tag: "Q4a — 2025 | HEAVY MARKS",
+        qa: [
+          {
+            q: "What do you mean by conflict serializability? Check if schedules S1 and S2 are conflict-serializable.",
+            a: `TRANSACTION: A unit of database work with ACID properties.
+• Atomicity, Consistency, Isolation, Durability
+
+SCHEDULE: An order in which operations of multiple concurrent transactions execute.
+
+SERIAL SCHEDULE: Transactions run one after another (no interleaving). Always correct but slow.
+
+SERIALIZABLE SCHEDULE: A concurrent schedule that gives the same result as SOME serial schedule. This is the goal.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CONFLICTING OPERATIONS:
+
+Two operations CONFLICT if ALL THREE conditions hold:
+1. They belong to DIFFERENT transactions
+2. They access the SAME data item
+3. At least ONE is a WRITE
+
+Conflict types:
+• Read-Write (RW): Ti reads, Tj writes same item
+• Write-Read (WR): Ti writes, Tj reads same item
+• Write-Write (WW): Ti writes, Tj writes same item
+• Read-Read: Does NOT conflict (safe)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CONFLICT SERIALIZABILITY — PRECEDENCE GRAPH METHOD:
+
+Steps:
+1. Draw one NODE per transaction
+2. For each pair of conflicting operations where Ti's operation comes BEFORE Tj's, draw arrow: Ti → Tj
+3. If graph has NO CYCLE → CONFLICT SERIALIZABLE ✓
+4. If graph has a CYCLE → NOT conflict serializable ✗
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FROM 2025 PAPER:
+
+Transactions:
+T1: r1(X); r1(Z); w1(X); w1(Z)
+T2: r2(Y); r2(Z); w2(Z)
+T3: r3(Y); r3(X); w3(Y)
+
+SCHEDULE S1:
+r1(X); r3(Y); r3(X); r2(Y); r2(Z); w3(Y); w2(Z); r1(Z); w1(X); w1(Z)
+
+Finding conflicts in S1:
+• r3(X) comes before w1(X) → T3 reads X, T1 writes X → T3 → T1
+• r2(Z) comes before w1(Z) → T2 reads Z, T1 writes Z → T2 → T1
+• w2(Z) comes before w1(Z) → T2 writes Z, T1 writes Z → T2 → T1
+• r2(Y) comes before w3(Y) → T2 reads Y, T3 writes Y → T2 → T3
+
+Precedence Graph for S1:
+T2 → T1
+T2 → T3
+T3 → T1
+
+Is there a cycle? NO ✓
+S1 IS CONFLICT SERIALIZABLE
+Equivalent serial order: T2, T3, T1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SCHEDULE S2:
+r1(X); r3(Y); r3(X); r2(Y); r2(Z); r1(Z); w2(Z); w1(X); w1(Z)
+
+Finding conflicts in S2:
+• r3(X) before w1(X) → T3 → T1
+• r2(Z) before w1(Z) → T2 → T1
+• w2(Z) before w1(Z) → T2 → T1
+• r2(Y) before w3(Y) → T2 → T3
+• (check carefully for T1 → T2 or T1 → T3 conflicts...)
+• r1(Z) before w2(Z) → T1 reads Z, T2 writes Z → T1 → T2
+
+Precedence Graph for S2:
+T2 → T1, T2 → T3, T3 → T1, T1 → T2
+
+CYCLE: T1 → T2 → T1 ✗
+S2 is NOT CONFLICT SERIALIZABLE
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY POINTS:
+• Conflict serializable ⊂ Serializable
+• Precedence graph is the standard method
+• No cycle = serializable; cycle = not serializable`
+          }
+        ]
+      },
+      {
+        title: "Concurrency Control — Lost Update Problem",
+        marks: "5 marks",
+        tag: "Q2b — 2025",
+        qa: [
+          {
+            q: "Why is concurrency control needed? Explain the lost update problem.",
+            a: `CONCURRENCY CONTROL ensures that multiple transactions executing simultaneously produce correct results, maintaining database consistency.
+
+Why needed:
+• Modern DBMS allows many users at the same time
+• Without control, transactions can interfere with each other
+• Ensures the ISOLATION property of ACID
+• Prevents various anomalies/problems
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROBLEMS WITHOUT CONCURRENCY CONTROL:
+
+1. LOST UPDATE PROBLEM (most important):
+
+Occurs when two transactions read the same data and both update it — one update OVERWRITES the other and is LOST.
+
+Example:
+Account Balance = ₹5000
+
+T1: Read Balance → gets 5000
+T2: Read Balance → gets 5000
+T1: Balance = 5000 − 1000 = 4000, Write Balance (4000)
+T2: Balance = 5000 − 2000 = 3000, Write Balance (3000) ← overwrites T1!
+
+Final balance = ₹3000
+But CORRECT balance should be = 5000 − 1000 − 2000 = ₹2000
+T1's deduction of ₹1000 is LOST!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. DIRTY READ PROBLEM (Temporary Update):
+• T1 updates a value but hasn't committed yet
+• T2 reads the updated (dirty) value
+• T1 then ROLLS BACK
+• T2 has read invalid data that never officially existed
+
+3. INCORRECT SUMMARY PROBLEM:
+• One transaction reads values while another is updating them
+• Leads to wrong aggregate results (wrong SUM, COUNT, etc.)
+
+4. UNREPEATABLE READ:
+• T1 reads a value
+• T2 updates that value and commits
+• T1 reads again — gets a DIFFERENT value in the same transaction
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SOLUTIONS:
+
+• Locking Protocols:
+  - Shared Lock (S-lock): for reading — multiple transactions can hold
+  - Exclusive Lock (X-lock): for writing — only one transaction
+  - Two-Phase Locking (2PL): growing phase (acquire locks) + shrinking phase (release locks)
+
+• Timestamp Ordering: use timestamps to order transactions
+
+• Optimistic Concurrency Control: assume no conflict, validate at end
+
+• MVCC (Multiversion Concurrency Control): maintain multiple versions of data`
+          }
+        ]
+      },
+      {
+        title: "Mandatory Access Control & Database Security",
+        marks: "5 marks",
+        tag: "Q4b — 2025",
+        qa: [
+          {
+            q: "What do you mean by mandatory access control in database security?",
+            a: `DATABASE SECURITY refers to protecting the database from unauthorized access, misuse, modification, or destruction.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPES OF ACCESS CONTROL:
+
+1. DISCRETIONARY ACCESS CONTROL (DAC):
+   • Access rights given at the DISCRETION of the data owner
+   • Owners can grant/revoke permissions to/from others
+   • SQL GRANT and REVOKE commands are based on DAC
+   • Example: Table owner grants SELECT to another user
+   
+   GRANT SELECT ON Employee TO user1;
+   REVOKE SELECT ON Employee FROM user1;
+   
+   Weakness: Owner can unintentionally spread access too widely
+   ("Trojan horse" attack possible)
+
+2. MANDATORY ACCESS CONTROL (MAC):
+   • Access controlled by a CENTRAL AUTHORITY / SYSTEM POLICY
+   • NOT controlled by individual owners
+   • Based on SECURITY LABELS assigned to both data and users
+   • Users CANNOT change access rights — system enforces them strictly
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HOW MAC WORKS:
+
+Data is classified into security levels:
+Top Secret > Secret > Confidential > Unclassified
+
+Users are given CLEARANCE LEVELS
+
+A user can ONLY access data at their clearance level or BELOW
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BELL-LaPADULA MODEL (Standard MAC Model):
+
+No Read Up (Simple Security Property):
+A user CANNOT READ data classified ABOVE their clearance
+Example: A "Confidential" user cannot read "Top Secret" data
+
+No Write Down (* Property / Star Property):
+A user CANNOT WRITE data to a level BELOW their clearance
+(Prevents leaking high-security info to low-security levels)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MAC vs DAC:
+
+MAC:
+• System enforces access
+• Based on security labels/classifications
+• Used in military, government, defense systems
+• More secure but less flexible
+• User cannot override
+
+DAC:
+• Owner controls access
+• Based on user identity
+• Used in commercial DBMS (Oracle, MySQL)
+• More flexible but less secure
+• Owner can grant/revoke
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OTHER SECURITY CONCEPTS:
+
+Authentication: Verifying user identity (username + password, biometrics)
+Authorization: Determining what an authenticated user is allowed to do
+Auditing: Keeping logs of database access and modifications
+Encryption: Encoding sensitive data so unauthorized users cannot read it
+Views: Restricting what data a user can see`
+          }
+        ]
+      },
+      {
+        title: "Distributed DBMS Features",
+        marks: "5 marks",
+        tag: "Q6a — 2025",
+        qa: [
+          {
+            q: "Write some features of distributed databases.",
+            a: `A DISTRIBUTED DATABASE is a collection of logically interrelated databases stored and managed across multiple computers/nodes on a network, but appearing to users as a single unified database.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY FEATURES:
+
+1. DATA DISTRIBUTION
+   • Data is stored across multiple sites/nodes on a network
+   • Users interact as if it's one centralized database
+   • Physical data can be in different cities or countries
+
+2. TRANSPARENCY (most important feature)
+   • Location Transparency: Users don't need to know WHERE data is stored
+   • Replication Transparency: Users unaware of how many copies exist
+   • Fragmentation Transparency: Users unaware that data is split across sites
+   • Transaction Transparency: Transactions appear to work as in a single DB
+
+3. REPLICATION
+   • Same data is copied and stored at MULTIPLE sites
+   • Improves availability (if one site fails, data available elsewhere)
+   • Improves read performance
+   • Makes updates complex (must update all copies)
+
+4. FRAGMENTATION (Partitioning)
+   • Data can be split and stored at different sites
+   • Horizontal fragmentation: Different ROWS at different sites (e.g., North region data in Delhi server, South region in Chennai server)
+   • Vertical fragmentation: Different COLUMNS at different sites
+
+5. LOCAL AUTONOMY
+   • Each site can operate INDEPENDENTLY
+   • Local transactions can be processed locally without network
+   • Partial failure tolerance — other sites continue working
+
+6. IMPROVED PERFORMANCE
+   • Queries can be processed in PARALLEL at multiple sites
+   • Local queries processed locally → faster response
+   • Reduces bottleneck of centralized system
+
+7. IMPROVED RELIABILITY & AVAILABILITY
+   • No single point of failure
+   • If one site fails, data accessible from replicated sites
+   • System continues to operate despite partial failures
+
+8. SCALABILITY
+   • New sites can be added without redesigning the whole system
+   • Easy to scale as organization grows
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DISADVANTAGES:
+• More complex to design and manage
+• Maintaining data consistency across sites is challenging
+• Network failures can cause problems
+• Higher cost (hardware, network, software)
+• Distributed deadlock detection is complex`
+          }
+        ]
+      },
+      {
+        title: "Shadow Paging Recovery",
+        marks: "5 marks",
+        tag: "Q6b — 2025",
+        qa: [
+          {
+            q: "Explain shadow paging recovery.",
+            a: `SHADOW PAGING is a recovery technique that restores the database to a consistent state after a failure, WITHOUT using a transaction log.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BASIC CONCEPT:
+
+Maintains TWO page tables simultaneously:
+• Current Page Table — used and modified DURING the transaction
+• Shadow Page Table — the original, UNCHANGED copy kept safely on disk
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HOW IT WORKS — STEP BY STEP:
+
+STEP 1 — Transaction Begins:
+• Both page tables are IDENTICAL at the start
+• Shadow = exact copy of Current
+• Shadow page table is written to disk
+
+STEP 2 — During Transaction:
+• Shadow page table is NEVER modified — it always holds the last committed state
+• All modifications go to the Current page table only
+• When a page is to be written:
+  - A NEW copy of the page is created on disk
+  - Current page table is updated to point to the new page
+  - Shadow page table still points to the OLD (original) pages
+
+STEP 3a — ON COMMIT (Transaction succeeds):
+• Current page table REPLACES the shadow page table
+• Old pages pointed to by shadow are freed (garbage collected)
+• Transaction is successfully committed ✓
+
+STEP 3b — ON FAILURE / ABORT:
+• Simply DISCARD the current page table
+• RESTORE the shadow page table
+• Database automatically returns to pre-transaction state ✓
+• NO UNDO operations needed!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ADVANTAGES:
+• No need for UNDO logs — recovery is instant
+• Fast recovery — just switch back to shadow page table
+• Simple to understand and implement
+• No redo/undo processing during recovery
+
+DISADVANTAGES:
+• Data fragmentation — pages scatter on disk over time
+• Garbage collection needed for old pages
+• Not efficient for large databases with frequent updates
+• Complex for concurrent (multiple) transactions
+• Commit is expensive — entire current page table must be written to disk
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SHADOW PAGING vs LOG-BASED RECOVERY:
+
+Shadow Paging:
+• No log needed
+• Fast recovery (just swap page table)
+• Causes disk fragmentation
+• Expensive commits
+• Used in: early systems, some simple DBs
+
+Log-Based Recovery:
+• Requires maintaining a log file
+• Slower recovery (must process log)
+• No fragmentation
+• Cheap commits
+• Used in: almost all modern DBMS (Oracle, MySQL, PostgreSQL)`
+          }
+        ]
+      }
+    ]
+  }
+];
+
+// ─── RENDER PART A ───────────────────────────────────────────
+function renderPartA() {
+  const container = document.getElementById('parta');
+  partAData.forEach((item, i) => {
+    const acc = document.createElement('div');
+    acc.className = 'accordion';
+    acc.style.background = '#1a1a2e';
+
+    const header = document.createElement('div');
+    header.className = 'acc-header';
+    header.innerHTML = `
+      <div class="acc-num" style="background:#ffd700;color:#1a1a2e;">${i+1}</div>
+      <div style="flex:1">
+        <div class="acc-title" style="color:#e8e8e0;">${item.q}</div>
+      </div>
+      <div class="acc-arrow" style="color:#ffd700;">▼</div>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'acc-body';
+    body.innerHTML = `
+      <div style="padding:16px 18px;background:#0a0a18;">
+        <div style="font-size:10px;color:#ffd700;font-weight:700;letter-spacing:2px;margin-bottom:12px;">✦ ANSWER</div>
+        <div class="answer-text">${item.a}</div>
+      </div>
+    `;
+
+    header.addEventListener('click', () => {
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open', !isOpen);
+      header.querySelector('.acc-arrow').textContent = isOpen ? '▼' : '▲';
+    });
+
+    acc.appendChild(header);
+    acc.appendChild(body);
+    container.appendChild(acc);
+  });
+}
+
+// ─── RENDER PART B ───────────────────────────────────────────
+function renderPartB() {
+  const container = document.getElementById('partb');
+  partBData.forEach((unit) => {
+    const unitDiv = document.createElement('div');
+    unitDiv.style.marginBottom = '20px';
+
+    const unitHeader = document.createElement('div');
+    unitHeader.className = 'unit-header';
+    unitHeader.style.background = unit.color + '22';
+    unitHeader.style.color = unit.color;
+    unitHeader.style.border = `1px solid ${unit.color}44`;
+    unitHeader.innerHTML = `<span>◈</span> ${unit.unit}`;
+    unitDiv.appendChild(unitHeader);
+
+    unit.topics.forEach((topic) => {
+      const acc = document.createElement('div');
+      acc.className = 'accordion';
+      acc.style.background = '#1a1a2e';
+      acc.style.border = `1px solid ${unit.color}22`;
+
+      const header = document.createElement('div');
+      header.className = 'acc-header';
+      header.innerHTML = `
+        <div style="flex:1">
+          <div class="acc-title" style="color:#e8e8e0;">${topic.title}</div>
+          <div class="acc-meta">
+            <span class="tag-marks" style="background:${unit.color}22;color:${unit.color};">${topic.marks}</span>
+            <span class="tag-ref">${topic.tag}</span>
+          </div>
+        </div>
+        <div class="acc-arrow" style="color:${unit.color};">▼</div>
+      `;
+
+      const body = document.createElement('div');
+      body.className = 'acc-body';
+
+      topic.qa.forEach((qa, qi) => {
+        const qaDiv = document.createElement('div');
+        qaDiv.className = 'qa-item';
+
+        const qDiv = document.createElement('div');
+        qDiv.className = 'qa-q';
+        qDiv.innerHTML = `
+          <div class="q-label" style="background:${unit.color}33;color:${unit.color};">Q${qi+1}</div>
+          <div class="qa-qtext">${qa.q}</div>
+          <div class="qa-arrow">▼</div>
+        `;
+
+        const aDiv = document.createElement('div');
+        aDiv.className = 'qa-answer';
+        aDiv.innerHTML = `
+          <div class="answer-label" style="color:${unit.color};">✦ ANSWER</div>
+          <div class="answer-text">${qa.a}</div>
+        `;
+
+        qDiv.addEventListener('click', () => {
+          const isOpen = aDiv.classList.contains('open');
+          aDiv.classList.toggle('open', !isOpen);
+          qDiv.querySelector('.qa-arrow').textContent = isOpen ? '▼' : '▲';
+        });
+
+        qaDiv.appendChild(qDiv);
+        qaDiv.appendChild(aDiv);
+        body.appendChild(qaDiv);
+      });
+
+      header.addEventListener('click', () => {
+        const isOpen = body.classList.contains('open');
+        body.classList.toggle('open', !isOpen);
+        header.querySelector('.acc-arrow').textContent = isOpen ? '▲' : '▼';
+      });
+
+      acc.appendChild(header);
+      acc.appendChild(body);
+      unitDiv.appendChild(acc);
+    });
+
+    container.appendChild(unitDiv);
+  });
+}
+
+renderPartA();
+renderPartB();
+</script>
+</body>
+</html>
