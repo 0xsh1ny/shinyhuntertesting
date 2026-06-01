@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT Exam Notes — PEC-CS-S-703</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #161616;
+    --border: #222222;
+    --accent: #f0c040;
+    --accent2: #4de0a0;
+    --accent3: #e05a5a;
+    --accent4: #5a9ef0;
+    --text: #e8e8e8;
+    --muted: #666666;
+    --tag-bg: #1a1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-left .subject {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .header-left .code {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-yellow { background: #2a2000; color: var(--accent); border: 1px solid #3a3000; }
+  .badge-green { background: #002a1a; color: var(--accent2); border: 1px solid #003a22; }
+  .badge-red { background: #2a0808; color: var(--accent3); border: 1px solid #3a1010; }
+  .badge-blue { background: #081828; color: var(--accent4); border: 1px solid #102030; }
+
+  /* NAV TABS */
+  .nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 32px;
+    background: var(--bg);
+    position: sticky;
+    top: 73px;
+    z-index: 99;
+  }
+
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CONTENT */
+  .content {
+    padding: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* SECTION HEADER */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -1px;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  /* TOPIC CARD */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: #333; }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .star-tag {
+    font-size: 9px;
+    background: #2a2000;
+    color: var(--accent);
+    border: 1px solid #3a3000;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  .marks-tag {
+    font-size: 9px;
+    background: #002a1a;
+    color: var(--accent2);
+    border: 1px solid #003a22;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: auto;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--bg3);
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #1a1a1a;
+    color: #ccc;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #131313; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-size: 11px;
+    color: var(--accent2);
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* LIST */
+  .note-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  .note-list li {
+    padding: 5px 0 5px 18px;
+    position: relative;
+    color: #ccc;
+    font-size: 12px;
+  }
+
+  .note-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: #141400;
+    border: 1px solid #2a2800;
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 12px;
+    color: #d4b840;
+  }
+
+  .highlight-green {
+    background: #001a0f;
+    border-color: #003020;
+    border-left-color: var(--accent2);
+    color: #3dc088;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  /* PART A GRID */
+  .qa-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .qa-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .qa-question {
+    background: var(--bg3);
+    padding: 12px 18px;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .qa-num {
+    background: var(--accent);
+    color: #000;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .qa-answer {
+    padding: 14px 18px;
+    font-size: 12px;
+    color: #ccc;
+    line-height: 1.8;
+  }
+
+  .qa-answer strong { color: var(--text); }
+
+  /* CHEAT SHEET */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .cheat-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+
+  .cheat-q {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .cheat-a {
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.5;
+  }
+
+  /* STRATEGY BOX */
+  .strategy {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .strategy-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .marks-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 12px;
+  }
+
+  .marks-row:last-child { border-bottom: none; }
+  .marks-label { color: #bbb; }
+  .marks-val { color: var(--accent2); font-weight: 600; }
+
+  /* SCROLL TO TOP */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    transition: transform 0.2s;
+    z-index: 200;
+  }
+
+  .scroll-top:hover { transform: scale(1.1); }
+
+  p { color: #bbb; font-size: 12px; margin: 8px 0; line-height: 1.8; }
+  strong { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .content { padding: 20px 16px; }
+    .header { padding: 20px 16px; }
+    .nav { padding: 0 16px; }
+    .nav-tab { padding: 12px 14px; font-size: 10px; }
+    .section-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="subject">⚡ IoT Exam Notes</div>
+    <div class="code">PEC-CS-S-703 &nbsp;·&nbsp; B.Tech 7th Sem &nbsp;·&nbsp; 75 Marks &nbsp;·&nbsp; 3 Hours</div>
+  </div>
+  <div class="header-right">
+    <span class="badge badge-yellow">4 Modules</span>
+    <span class="badge badge-green">Part A · 10 Qs</span>
+    <span class="badge badge-blue">Part B · Q2,3,6,7</span>
+    <span class="badge badge-red">Backup Topics</span>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-tab active" onclick="showTab('m1')">Module 1</div>
+  <div class="nav-tab" onclick="showTab('m2')">Module 2</div>
+  <div class="nav-tab" onclick="showTab('m3')">Module 3</div>
+  <div class="nav-tab" onclick="showTab('m4')">Module 4</div>
+  <div class="nav-tab" onclick="showTab('parta')">Part A</div>
+  <div class="nav-tab" onclick="showTab('partb')">Part B</div>
+  <div class="nav-tab" onclick="showTab('backup')">Backup</div>
+</div>
+
+<div class="content">
+
+  <!-- ===================== MODULE 1 ===================== -->
+  <div id="m1" class="section active">
+    <div class="section-title" style="color:#f0c040">Module 1</div>
+    <div class="section-sub">INTRODUCTION TO IoT</div>
+
+    <div class="card">
+      <div class="card-title">What is IoT?</div>
+      <p>IoT = <strong>Internet of Things</strong> — a network of physical devices embedded with sensors, software, and connectivity to collect and exchange data over the internet <strong>without human intervention.</strong></p>
+      <p style="margin-top:8px">Examples: Smart AC, fitness band, smart traffic lights, industrial machines.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Characteristics of IoT <span class="star-tag">Remember: ID-SCSI</span></div>
+      <table>
+        <tr><th>Char</th><th>Meaning</th></tr>
+        <tr><td><strong>I</strong>ntelligence</td><td>Decision making capability</td></tr>
+        <tr><td><strong>D</strong>ynamic changes</td><td>Adapts to environment</td></tr>
+        <tr><td><strong>S</strong>calability</td><td>Millions of devices can connect</td></tr>
+        <tr><td><strong>C</strong>onnectivity</td><td>Always connected</td></tr>
+        <tr><td><strong>S</strong>ensing</td><td>Collects real-world data</td></tr>
+        <tr><td><strong>I</strong>nteroperability</td><td>Different devices work together</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Physical & Logical Design of IoT</div>
+      <p><strong>Physical Design</strong> = actual hardware: Things/Devices → Gateway → Internet → Cloud/Server</p>
+      <p style="margin-top:8px"><strong>Logical Design</strong> = how data flows (abstract layers):</p>
+      <div class="code-block">Application Layer    ← user interface, apps
+Middleware Layer     ← data processing, APIs
+Network Layer        ← connectivity
+Perception Layer     ← sensors, actuators</div>
+      <div class="highlight">Actuator = device that ACTS on the physical world based on commands (motor, valve, LED). Opposite of sensor which READS data.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Functional Blocks of IoT <span class="star-tag">⭐ PYQ 10 Marks</span><span class="marks-tag">Remember: D-C-S-M-A-S-B</span></div>
+      <table>
+        <tr><th>Block</th><th>Function</th></tr>
+        <tr><td><strong>Device</strong></td><td>Sensors/actuators that sense & act</td></tr>
+        <tr><td><strong>Communication</strong></td><td>Protocols to transfer data (WiFi, BT, Zigbee)</td></tr>
+        <tr><td><strong>Services</strong></td><td>Device monitoring, data publishing, analytics</td></tr>
+        <tr><td><strong>Management</strong></td><td>Configuration, fault management, OTA updates</td></tr>
+        <tr><td><strong>Application</strong></td><td>User-facing interface (smart home app etc.)</td></tr>
+        <tr><td><strong>Security</strong></td><td>Auth, encryption, access control</td></tr>
+        <tr><td><strong>Business</strong></td><td>Business models, decisions from IoT data, reports</td></tr>
+      </table>
+      <div class="code-block">[Device] → [Communication] → [Services]
+                                    ↓
+[Business] ← [Application] ← [Management]
+                                    ↓
+                              [Security]
+    (Security layer protects ALL blocks)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Communication Models & APIs</div>
+      <table>
+        <tr><th>Model</th><th>How it works</th><th>Example</th></tr>
+        <tr><td>Request-Response</td><td>Client asks, server replies</td><td>Web browsing</td></tr>
+        <tr><td>Publish-Subscribe</td><td>Publisher → broker; subscribers receive</td><td>MQTT</td></tr>
+        <tr><td>Push-Pull</td><td>Producer pushes to queue; consumer pulls</td><td>Data pipelines</td></tr>
+        <tr><td>Exclusive Pair</td><td>Full duplex, persistent connection</td><td>WebSocket</td></tr>
+      </table>
+      <div class="highlight">API = set of rules allowing two software systems to communicate. In IoT, APIs let devices send/receive data to/from cloud.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">IoT vs M2M <span class="star-tag">⭐ PYQ Direct</span></div>
+      <table>
+        <tr><th>Feature</th><th>IoT</th><th>M2M</th></tr>
+        <tr><td>Communication</td><td>Internet/cloud based</td><td>Direct point-to-point</td></tr>
+        <tr><td>Intelligence</td><td>High — cloud AI</td><td>Low — basic automation</td></tr>
+        <tr><td>Scalability</td><td>Millions of devices</td><td>Limited</td></tr>
+        <tr><td>Protocols</td><td>HTTP, MQTT, CoAP</td><td>Proprietary/SCADA</td></tr>
+        <tr><td>Human interface</td><td>Apps, dashboards</td><td>Minimal</td></tr>
+        <tr><td>Example</td><td>Smart home, wearables</td><td>ATM network, vending machines</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">IoT Security Requirements <span class="star-tag">⭐ PYQ 5 Marks</span><span class="marks-tag">Remember: AIACIP</span></div>
+      <ul class="note-list">
+        <li><strong>Authentication</strong> — verify device/user identity before access</li>
+        <li><strong>Authorization</strong> — control what an authenticated user can do (RBAC)</li>
+        <li><strong>Integrity</strong> — data must not be tampered (hash functions)</li>
+        <li><strong>Confidentiality</strong> — data encrypted using TLS/SSL</li>
+        <li><strong>Availability</strong> — system always accessible, DDoS protection</li>
+        <li><strong>Privacy</strong> — personal user data protected and not misused</li>
+      </ul>
+      <p style="margin-top:8px"><strong>Challenge areas:</strong> Design (low power devices can't run heavy encryption) · Development (no standard framework) · Security (large attack surface)</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Software Defined Network (SDN)</div>
+      <p>Traditional networks: hardware controls routing (rigid). SDN: <strong>software controls the network</strong> — separates control plane from data plane. In IoT: makes network flexible, programmable, centrally managed. Handles huge number of IoT devices efficiently.</p>
+    </div>
+  </div>
+
+  <!-- ===================== MODULE 2 ===================== -->
+  <div id="m2" class="section">
+    <div class="section-title" style="color:#4de0a0">Module 2</div>
+    <div class="section-sub">NETWORK & COMMUNICATION ASPECTS</div>
+
+    <div class="card">
+      <div class="card-title">Wireless Medium Access Issues</div>
+      <table>
+        <tr><th>Problem</th><th>Explanation</th></tr>
+        <tr><td>Collision</td><td>Two devices transmit simultaneously → data corrupted</td></tr>
+        <tr><td>Hidden Terminal</td><td>Device can't hear another transmitter → causes collision</td></tr>
+        <tr><td>Exposed Terminal</td><td>Device unnecessarily stops transmitting</td></tr>
+        <tr><td>Energy consumption</td><td>Devices waste battery staying always on</td></tr>
+        <tr><td>Interference</td><td>Signals from other devices disrupt communication</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Hidden Terminal vs Exposed Terminal <span class="star-tag">⭐ PYQ Direct</span></div>
+      <div class="code-block">Hidden Terminal:
+A ——→ B ←—— C
+(A & C can't hear each other → both transmit → COLLISION at B)
+Solution: RTS/CTS mechanism
+
+Exposed Terminal:
+A ←—— B      C ——→ D
+(C hears B, unnecessarily stops transmitting to D — NO collision would happen)
+Result: Wastage of channel capacity</div>
+      <div class="highlight">One line difference: Hidden = collision HAPPENS. Exposed = collision doesn't happen but device still waits unnecessarily.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">MAC Protocol — Responsibilities <span class="star-tag">⭐ PYQ 10 Marks</span></div>
+      <ul class="note-list">
+        <li><strong>Channel allocation</strong> — decides which device transmits when</li>
+        <li><strong>Collision avoidance</strong> — CSMA/CA with random backoff timer</li>
+        <li><strong>Energy efficiency</strong> — sleep/wake duty cycling for battery devices</li>
+        <li><strong>Fairness</strong> — every node gets equal channel access</li>
+        <li><strong>Reliability</strong> — ACK + retransmission of lost packets</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Design Issues:</strong></p>
+      <ul class="note-list">
+        <li><strong>Scalability</strong> — must handle thousands of IoT nodes</li>
+        <li><strong>Energy constraint</strong> — battery-powered devices need ultra-low power</li>
+        <li><strong>Mobility</strong> — nodes move, topology changes dynamically</li>
+        <li><strong>Heterogeneity</strong> — different device types must all work</li>
+        <li><strong>Latency</strong> — time-critical apps need low delay</li>
+      </ul>
+      <table style="margin-top:12px">
+        <tr><th>Type</th><th>How it works</th><th>Example</th></tr>
+        <tr><td>Contention-based</td><td>Devices compete for channel</td><td>CSMA/CA (WiFi)</td></tr>
+        <tr><td>TDMA-based</td><td>Fixed time slots assigned</td><td>Bluetooth</td></tr>
+        <tr><td>Hybrid</td><td>Mix of both</td><td>Z-MAC</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Routing Protocols for IoT</div>
+      <table>
+        <tr><th>Protocol</th><th>Type</th><th>Used in</th></tr>
+        <tr><td>AODV</td><td>Reactive (finds route when needed)</td><td>Mobile IoT</td></tr>
+        <tr><td>DSDV</td><td>Proactive (always maintains routes)</td><td>Static networks</td></tr>
+        <tr><td>DSR</td><td>Reactive, source routing</td><td>WSN</td></tr>
+        <tr><td><strong>RPL</strong></td><td>IPv6-based, tree structure</td><td><strong>6LoWPAN IoT ⭐</strong></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Data Aggregation & Dissemination</div>
+      <p><strong>Aggregation</strong> = combining data from multiple sensors into one summarized result → saves energy & bandwidth. Techniques: Average, Min, Max, Compression, Filtering.</p>
+      <p style="margin-top:8px"><strong>Dissemination</strong> = spreading data/commands FROM base station TO nodes (opposite of aggregation). Example: sending firmware update to all IoT devices.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">SCADA — Data Acquisition <span class="star-tag">⭐ PYQ 5 Marks</span></div>
+      <p style="margin-bottom:10px"><strong>SCADA = Supervisory Control and Data Acquisition</strong> — used in industrial IoT (power plants, water treatment, oil pipelines).</p>
+      <div class="code-block">Step 1: Field Devices (sensors, PLCs) measure physical parameters
+           ↓
+Step 2: RTUs (Remote Terminal Units) collect sensor data locally
+           ↓
+Step 3: Data transmitted to Master Station via communication network
+           ↓
+Step 4: SCADA software processes & displays data on HMI screen
+           ↓
+Step 5: Operator monitors and sends control commands back
+           ↓
+Step 6: All data logged in historian database for future analysis</div>
+      <table>
+        <tr><th>Component</th><th>Role</th></tr>
+        <tr><td>Sensors/PLCs</td><td>Measure real-world data</td></tr>
+        <tr><td>RTU</td><td>Local data collection unit</td></tr>
+        <tr><td>Master Station</td><td>Central processing & control</td></tr>
+        <tr><td>HMI</td><td>Visual display for operator</td></tr>
+        <tr><td>Historian</td><td>Database for logged data</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== MODULE 3 ===================== -->
+  <div id="m3" class="section">
+    <div class="section-title" style="color:#5a9ef0">Module 3</div>
+    <div class="section-sub">WEB OF THINGS</div>
+
+    <div class="card">
+      <div class="card-title">WoT vs IoT <span class="star-tag">⭐ PYQ Direct</span></div>
+      <table>
+        <tr><th>Feature</th><th>IoT</th><th>WoT</th></tr>
+        <tr><td>Focus</td><td>Connecting devices to internet</td><td>Integrating devices INTO web</td></tr>
+        <tr><td>Protocol</td><td>Any (MQTT, Zigbee, BT)</td><td>Web standards (HTTP, REST, JSON)</td></tr>
+        <tr><td>Access</td><td>Requires special apps/software</td><td>Normal web browser</td></tr>
+        <tr><td>Integration</td><td>Harder, proprietary</td><td>Easy, existing web tech</td></tr>
+        <tr><td>Example</td><td>Smart sensor sending raw data</td><td>Smart sensor with a URL</td></tr>
+      </table>
+      <div class="highlight">Simple: IoT = devices on internet. WoT = devices ON the web (like websites). WoT is built ON TOP OF IoT.</div>
+      <p style="margin-top:10px"><strong>Two Pillars of WoT:</strong></p>
+      <ul class="note-list">
+        <li><strong>Finding Things</strong> — devices must be discoverable on the web (have URLs)</li>
+        <li><strong>Sharing Things</strong> — devices share data using open web standards (REST, JSON)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Unified Multitier WoT Architecture</div>
+      <table>
+        <tr><th>Tier</th><th>What it does</th></tr>
+        <tr><td><strong>Tier 1: Device</strong></td><td>Physical IoT devices with web access</td></tr>
+        <tr><td><strong>Tier 2: Gateway</strong></td><td>Protocol translation, connects non-web devices</td></tr>
+        <tr><td><strong>Tier 3: Cloud</strong></td><td>Data storage, processing, analytics</td></tr>
+        <tr><td><strong>Tier 4: Application</strong></td><td>End-user apps, dashboards, business services</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cloud Computing for IoT <span class="star-tag">⭐ Important</span></div>
+      <table>
+        <tr><th>Model</th><th>Full form</th><th>What you get</th><th>Example</th></tr>
+        <tr><td><strong>IaaS</strong></td><td>Infrastructure as a Service</td><td>Virtual machines, storage</td><td>AWS EC2</td></tr>
+        <tr><td><strong>PaaS</strong></td><td>Platform as a Service</td><td>Dev platform, databases</td><td>Google App Engine</td></tr>
+        <tr><td><strong>SaaS</strong></td><td>Software as a Service</td><td>Ready-to-use software</td><td>Gmail, Salesforce</td></tr>
+      </table>
+      <p style="margin-top:10px"><strong>Why IoT needs cloud:</strong> Devices have limited storage → Cloud provides unlimited storage + heavy processing + access from anywhere.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Virtualization <span class="star-tag">⭐ PYQ 5 Marks</span></div>
+      <p><strong>Virtualization</strong> = creating a virtual version of physical resources. A <strong>Hypervisor</strong> software creates multiple Virtual Machines (VMs) on one physical server.</p>
+      <p style="margin-top:8px"><strong>Advantages:</strong></p>
+      <ul class="note-list">
+        <li>Cost saving — fewer physical machines needed</li>
+        <li>Efficient resource use — no hardware sits idle</li>
+        <li>Easy scaling — spin up new VMs instantly</li>
+        <li>Isolation — one VM crash doesn't affect others</li>
+        <li>Disaster recovery — VMs can be backed up easily</li>
+        <li>Energy saving — fewer physical servers = less power</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cloud Middleware</div>
+      <p><strong>Middleware</strong> = software layer between IoT devices and applications.</p>
+      <p style="margin-top:6px"><strong>Functions:</strong> Device management · Data collection · Data processing · Protocol translation · Security (auth + encryption)</p>
+      <p style="margin-top:6px"><strong>Popular platforms:</strong> AWS IoT Core · Microsoft Azure IoT Hub · Google Cloud IoT</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">6LoWPAN <span class="star-tag">⭐ PYQ Short Note</span></div>
+      <p><strong>6LoWPAN = IPv6 over Low Power Wireless Personal Area Networks</strong></p>
+      <p style="margin-top:8px">IoT devices are small & low power — can't handle full IPv6 packets. 6LoWPAN <strong>compresses IPv6 packets</strong> to fit small IoT devices. Based on IEEE 802.15.4.</p>
+      <ul class="note-list" style="margin-top:8px">
+        <li>Header compression — reduces packet size</li>
+        <li>Packet fragmentation & reassembly</li>
+        <li>Mesh networking support</li>
+        <li>Very low power consumption</li>
+        <li>Used in smart home, industrial IoT, healthcare</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cloud Standards</div>
+      <table>
+        <tr><th>Standard</th><th>Purpose</th></tr>
+        <tr><td>REST</td><td>Web API communication style</td></tr>
+        <tr><td>JSON</td><td>Data format for IoT messages</td></tr>
+        <tr><td>OAuth</td><td>Authorization standard</td></tr>
+        <tr><td>TLS/SSL</td><td>Encryption for data in transit</td></tr>
+        <tr><td>MQTT</td><td>Lightweight publish-subscribe for IoT</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== MODULE 4 ===================== -->
+  <div id="m4" class="section">
+    <div class="section-title" style="color:#e05a5a">Module 4</div>
+    <div class="section-sub">RESOURCE MANAGEMENT IN IoT</div>
+
+    <div class="card">
+      <div class="card-title">IoT Applications <span class="star-tag">⭐ Short Note</span></div>
+      <table>
+        <tr><th>Domain</th><th>Applications</th></tr>
+        <tr><td><strong>Home Automation</strong></td><td>Smart lighting, smart AC, smart door lock, energy monitoring</td></tr>
+        <tr><td><strong>Industry (IIoT)</strong></td><td>Predictive maintenance, asset tracking, quality control, supply chain</td></tr>
+        <tr><td><strong>Surveillance</strong></td><td>Smart CCTV, border surveillance, traffic monitoring, environmental monitoring</td></tr>
+        <tr><td><strong>Healthcare</strong></td><td>Patient monitoring, smart pills, wearables</td></tr>
+        <tr><td><strong>Agriculture</strong></td><td>Soil moisture sensors, smart irrigation</td></tr>
+        <tr><td><strong>Smart City</strong></td><td>Smart parking, street lights, waste management</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">RFID <span class="star-tag">⭐ Part A 1.5 Marks</span></div>
+      <p><strong>RFID = Radio Frequency Identification</strong> — uses radio waves to identify objects. Components: Tag (on object) + Reader (scans tag) + Backend system.</p>
+      <table style="margin-top:10px">
+        <tr><th>Type</th><th>Power</th><th>Range</th></tr>
+        <tr><td>Passive</td><td>Powered by reader's signal</td><td>Short (few cm)</td></tr>
+        <tr><td>Active</td><td>Has own battery</td><td>Long (100m+)</td></tr>
+      </table>
+      <p style="margin-top:10px"><strong>Applications (any 2):</strong> Library book tracking · Access control · Supply chain · Passport/ID cards · Animal tracking</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Clustering in IoT</div>
+      <div class="code-block">Node → Node → [Cluster Head] → Gateway → Cloud
+Node → Node ↗</div>
+      <p><strong>Why clustering?</strong> Reduces energy · Cluster head aggregates data → sends ONE message · Scalable · Reduces network traffic.</p>
+      <p style="margin-top:8px"><strong>Cluster Head responsibilities:</strong> Collect data from members · Aggregate & compress · Forward to gateway · Manage communication schedule.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Synchronization in IoT</div>
+      <p>IoT devices need <strong>same time reference</strong> for coordinated actions. Without sync: data can't be correlated · security tokens fail · scheduled tasks run at wrong times.</p>
+      <table style="margin-top:10px">
+        <tr><th>Method</th><th>Description</th></tr>
+        <tr><td>NTP</td><td>Network Time Protocol — syncs with internet time server</td></tr>
+        <tr><td>GPS-based</td><td>Uses GPS signal for precise time</td></tr>
+        <tr><td>RBS</td><td>Reference Broadcast Synchronization — for WSN</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Software Agents in IoT <span class="star-tag">⭐ PYQ Direct</span></div>
+      <p><strong>Software Agent</strong> = autonomous program that perceives environment and takes actions to achieve goals — without human intervention.</p>
+      <table style="margin-top:10px">
+        <tr><th>Role</th><th>Explanation</th></tr>
+        <tr><td>Monitoring</td><td>Continuously monitors sensor data</td></tr>
+        <tr><td>Decision making</td><td>Takes action based on data (temp > 40°C → turn on fan)</td></tr>
+        <tr><td>Automation</td><td>Automates repetitive tasks</td></tr>
+        <tr><td>Fault detection</td><td>Detects anomalies and alerts user</td></tr>
+        <tr><td>Resource management</td><td>Manages bandwidth, power, processing</td></tr>
+      </table>
+      <p style="margin-top:10px"><strong>Types:</strong> Reactive (responds to environment) · Deliberative (plans ahead) · Mobile (moves between devices)</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Processing Overloading <span class="star-tag">⭐ PYQ 5 Marks</span></div>
+      <p><strong>Processing Overloading</strong> = when IoT system receives more data than it can process in time.</p>
+      <table style="margin-top:10px">
+        <tr><th>Solution Type</th><th>Explanation</th></tr>
+        <tr><td>Edge Computing</td><td>Process data at device level, don't send everything to cloud</td></tr>
+        <tr><td>Fog Computing</td><td>Process at intermediate gateway level</td></tr>
+        <tr><td>Load Balancing</td><td>Distribute processing across multiple servers</td></tr>
+        <tr><td>Data Filtering</td><td>Only send important data to cloud</td></tr>
+        <tr><td>Task Scheduling</td><td>Prioritize critical tasks</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Common Data Types in IoT <span class="star-tag">⭐ PYQ 5 Marks</span></div>
+      <table>
+        <tr><th>Data Type</th><th>Description</th><th>Example</th></tr>
+        <tr><td>Scalar</td><td>Single numeric value</td><td>Temperature = 36.5°C</td></tr>
+        <tr><td>Location</td><td>GPS coordinates</td><td>Lat/Long of vehicle</td></tr>
+        <tr><td>Image</td><td>Photo data</td><td>Security camera snapshot</td></tr>
+        <tr><td>Video</td><td>Continuous frames</td><td>CCTV footage</td></tr>
+        <tr><td>Time-series</td><td>Data over time intervals</td><td>Heart rate every second</td></tr>
+        <tr><td>Binary</td><td>On/Off states</td><td>Door open/closed</td></tr>
+        <tr><td>Metadata</td><td>Data about data</td><td>Device ID, timestamp</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Factors Influencing Sensor Choice <span class="star-tag">⭐ PYQ 10 Marks</span></div>
+      <table>
+        <tr><th>Factor</th><th>Explanation</th></tr>
+        <tr><td>Accuracy</td><td>How precise the measurement is</td></tr>
+        <tr><td>Range</td><td>Min & max values it can measure</td></tr>
+        <tr><td>Sensitivity</td><td>Smallest change it can detect</td></tr>
+        <tr><td>Power consumption</td><td>Battery-operated devices need low-power sensors</td></tr>
+        <tr><td>Cost</td><td>Budget constraints in large deployments</td></tr>
+        <tr><td>Size</td><td>Must fit in the device/environment</td></tr>
+        <tr><td>Response time</td><td>How fast it reacts to changes</td></tr>
+        <tr><td>Durability</td><td>Must survive environment (heat, water, dust)</td></tr>
+        <tr><td>Communication</td><td>Must support required protocol (I2C, SPI, analog)</td></tr>
+        <tr><td>Calibration</td><td>How often it needs recalibration</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== PART A ===================== -->
+  <div id="parta" class="section">
+    <div class="section-title" style="color:#f0c040">Part A</div>
+    <div class="section-sub">10 SHORT QUESTIONS × 1.5 MARKS = 15 MARKS — ALL COMPULSORY</div>
+
+    <div class="highlight" style="margin-bottom:20px">⚡ DO PART A FIRST in the exam — easy marks, builds confidence. Each answer = 2-3 lines max.</div>
+
+    <div class="qa-grid">
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">1</div>Explain the term Actuator.</div>
+        <div class="qa-answer">An <strong>actuator</strong> is a device that receives a command signal and <strong>performs a physical action</strong> on the environment. Unlike sensors that read data, actuators <strong>act on</strong> data.<br><br><strong>Examples:</strong> Motor, valve, LED light, buzzer, relay switch.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">2</div>Differentiate between IPv4 and IPv6.</div>
+        <div class="qa-answer">
+          <table>
+            <tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr>
+            <tr><td>Address size</td><td>32-bit</td><td>128-bit</td></tr>
+            <tr><td>Total addresses</td><td>~4 billion</td><td>Virtually unlimited</td></tr>
+            <tr><td>Format</td><td>192.168.1.1</td><td>2001:0db8::1</td></tr>
+            <tr><td>IoT suitability</td><td>Limited</td><td>Ideal — every device gets unique IP</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">3</div>What is an API?</div>
+        <div class="qa-answer"><strong>API = Application Programming Interface.</strong> It is a set of rules that allows two software systems to <strong>communicate with each other.</strong><br><br>In IoT, APIs allow devices to <strong>send/receive data</strong> to/from cloud servers. Example: A weather sensor uses an API to push temperature data to a mobile app.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">4</div>Explain the role of Software Agent in IoT.</div>
+        <div class="qa-answer">A software agent is an <strong>autonomous program</strong> that monitors sensor data and <strong>takes decisions without human intervention.</strong><br><br><strong>Roles:</strong> Monitoring · Automation · Fault detection · Resource management.<br><strong>Example:</strong> Agent detects temperature > 40°C → automatically turns on fan.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">5</div>Give any two advantages of IoT.</div>
+        <div class="qa-answer">1. <strong>Automation</strong> — devices work automatically without human intervention.<br>2. <strong>Remote monitoring</strong> — monitor and control devices from anywhere via internet.<br>3. <strong>Cost saving</strong> — predictive maintenance reduces equipment failure costs. <em>(write any 2)</em></div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">6</div>Define Resource Sharing in Cloud Computing.</div>
+        <div class="qa-answer">Resource sharing means <strong>multiple users share the same physical infrastructure</strong> (servers, storage, network) provided by the cloud provider.<br><br>Each user gets their own <strong>virtual</strong> resources while the underlying hardware is shared. <strong>Benefit:</strong> Reduces cost, improves efficiency, no idle hardware.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">7</div>Explain Privacy with respect to IoT Devices.</div>
+        <div class="qa-answer">Privacy in IoT means <strong>protecting personal data</strong> collected by IoT devices from unauthorized access or misuse.<br><br>IoT devices like wearables and smart speakers collect sensitive user data continuously. Users must have <strong>control over what data is collected, stored and shared.</strong></div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">8</div>Name any two applications of RFID.</div>
+        <div class="qa-answer">1. <strong>Library management</strong> — tracking books using RFID tags.<br>2. <strong>Access control systems</strong> — office entry using RFID ID cards.<br><br><em>Other valid answers: Supply chain tracking, passport verification, animal tracking, retail inventory.</em></div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">9</div>Define Scalability.</div>
+        <div class="qa-answer"><strong>Scalability</strong> is the ability of an IoT system to <strong>handle increasing number of devices, users or data</strong> without performance degradation.<br><br>A scalable system grows smoothly from 100 devices to 1 million devices. <strong>Example:</strong> Cloud platforms like AWS scale automatically as IoT devices increase.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-question"><div class="qa-num">10</div>Explain the purpose of Business Layer.</div>
+        <div class="qa-answer">The <strong>Business Layer</strong> is the topmost layer of IoT architecture. It converts raw IoT data into <strong>meaningful business insights, reports and graphs.</strong><br><br>It helps organizations make <strong>smart business decisions</strong> based on IoT data. <strong>Example:</strong> Retail store analyzes foot traffic data to optimize staff scheduling.</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:28px">
+      <div class="strategy-title">⚡ 30-SECOND CHEAT SHEET</div>
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="cheat-q">Q1 · Actuator</div><div class="cheat-a">Device that acts on environment (motor, valve, LED)</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q2 · IPv4 vs IPv6</div><div class="cheat-a">32-bit vs 128-bit addresses</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q3 · API</div><div class="cheat-a">Rules for two software systems to communicate</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q4 · Software Agent</div><div class="cheat-a">Autonomous program that makes decisions without human</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q5 · IoT Advantages</div><div class="cheat-a">Automation + Remote monitoring</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q6 · Resource Sharing</div><div class="cheat-a">Multiple users share same cloud infrastructure</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q7 · Privacy</div><div class="cheat-a">Protecting personal data from misuse</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q8 · RFID Apps</div><div class="cheat-a">Library + Access control</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q9 · Scalability</div><div class="cheat-a">Handle growing devices without performance loss</div></div>
+        <div class="cheat-item"><div class="cheat-q">Q10 · Business Layer</div><div class="cheat-a">Converts IoT data into business decisions</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PART B ===================== -->
+  <div id="partb" class="section">
+    <div class="section-title" style="color:#4de0a0">Part B</div>
+    <div class="section-sub">ATTEMPT: Q2, Q3, Q6, Q7 — 4 × 15 MARKS = 60 MARKS</div>
+
+    <div class="strategy">
+      <div class="strategy-title">📊 Marks Projection</div>
+      <div class="marks-row"><span class="marks-label">Part A (10 short Qs)</span><span class="marks-val">~12-13 / 15</span></div>
+      <div class="marks-row"><span class="marks-label">Q2 — Functional Blocks + Security</span><span class="marks-val">~11-12 / 15</span></div>
+      <div class="marks-row"><span class="marks-label">Q3 — Three Differentiations</span><span class="marks-val">~11-12 / 15</span></div>
+      <div class="marks-row"><span class="marks-label">Q6 — MAC Protocols + SCADA</span><span class="marks-val">~10-11 / 15</span></div>
+      <div class="marks-row"><span class="marks-label">Q7 — Three Short Notes</span><span class="marks-val">~10-11 / 15</span></div>
+      <div class="marks-row" style="border-top:1px solid #333;margin-top:4px;padding-top:12px"><span class="marks-label" style="color:#fff;font-weight:700">TOTAL REALISTIC SCORE</span><span class="marks-val" style="font-size:15px">~54-56 / 75 ✅</span></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="card">
+      <div class="card-title">Q2(a) — Functional Blocks of IoT <span class="marks-tag">10 Marks</span></div>
+      <p>IoT system is divided into <strong>7 functional blocks</strong> that work together to enable smart connected applications.</p>
+      <table style="margin-top:12px">
+        <tr><th>Block</th><th>Function</th></tr>
+        <tr><td><strong>1. Device</strong></td><td>Sensors collect data; actuators act on environment</td></tr>
+        <tr><td><strong>2. Communication</strong></td><td>Data transfer via WiFi, Bluetooth, Zigbee, MQTT, CoAP</td></tr>
+        <tr><td><strong>3. Services</strong></td><td>Device monitoring, data publishing, device discovery, analytics</td></tr>
+        <tr><td><strong>4. Management</strong></td><td>Configuration, fault management, performance monitoring, OTA updates</td></tr>
+        <tr><td><strong>5. Application</strong></td><td>User-facing: mobile apps, dashboards, domain-specific apps</td></tr>
+        <tr><td><strong>6. Security</strong></td><td>Authentication, authorization, encryption, secure boot</td></tr>
+        <tr><td><strong>7. Business</strong></td><td>Converts IoT data to business insights, reports, SLA management</td></tr>
+      </table>
+      <div class="code-block">[Device] → [Communication] → [Services]
+                                    ↓
+[Business] ← [Application] ← [Management]
+                                    ↓
+                              [Security]
+         (Security layer protects ALL blocks)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q2(b) — IoT Security Requirements <span class="marks-tag">5 Marks</span></div>
+      <ul class="note-list">
+        <li><strong>Authentication</strong> — every device/user must prove identity before access. Methods: passwords, certificates, biometrics.</li>
+        <li><strong>Authorization</strong> — controls what authenticated user can do. Role-based access control (RBAC). Example: sensor can send data but cannot change settings.</li>
+        <li><strong>Data Integrity</strong> — data must not be modified during transmission. Achieved using hash functions (SHA, MD5). System detects and rejects tampered data.</li>
+        <li><strong>Confidentiality</strong> — data encrypted using TLS/SSL so only intended receiver can read it.</li>
+        <li><strong>Availability</strong> — system must always be accessible. Protection against DDoS attacks. Redundant systems ensure no downtime.</li>
+        <li><strong>Privacy</strong> — personal user data protected and not misused. Users must have control over what data is collected and shared.</li>
+      </ul>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q3 -->
+    <div class="card">
+      <div class="card-title">Q3(a) — Hidden Terminal vs Exposed Terminal <span class="marks-tag">5 Marks</span></div>
+      <table>
+        <tr><th>Feature</th><th>Hidden Terminal</th><th>Exposed Terminal</th></tr>
+        <tr><td>Definition</td><td>Two nodes invisible to each other both transmit to same receiver</td><td>Node unnecessarily stops transmission thinking it will cause collision</td></tr>
+        <tr><td>Result</td><td><strong>Collision occurs</strong> at receiver</td><td><strong>No collision</strong> but channel is wasted</td></tr>
+        <tr><td>Problem type</td><td>Causes interference</td><td>Causes unnecessary waiting</td></tr>
+        <tr><td>Solution</td><td>RTS/CTS mechanism</td><td>Can be ignored in most cases</td></tr>
+      </table>
+      <div class="code-block">Hidden Terminal:
+A ——→ B ←—— C
+(A & C can't hear each other → both transmit → COLLISION at B)
+
+Exposed Terminal:
+A ←—— B      C ——→ D
+(C hears B, unnecessarily stops transmitting to D — no collision would happen)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q3(b) — IoT vs M2M <span class="marks-tag">5 Marks</span></div>
+      <table>
+        <tr><th>Feature</th><th>IoT</th><th>M2M</th></tr>
+        <tr><td>Full form</td><td>Internet of Things</td><td>Machine to Machine</td></tr>
+        <tr><td>Communication</td><td>Internet/cloud based</td><td>Direct point-to-point</td></tr>
+        <tr><td>Intelligence</td><td>High — cloud AI & analytics</td><td>Low — basic automation</td></tr>
+        <tr><td>Scalability</td><td>Millions of devices</td><td>Limited devices</td></tr>
+        <tr><td>Protocols</td><td>HTTP, MQTT, CoAP</td><td>Proprietary/SCADA</td></tr>
+        <tr><td>Data sharing</td><td>Open, accessible anywhere</td><td>Closed, limited sharing</td></tr>
+        <tr><td>Human interface</td><td>Apps, dashboards, voice</td><td>Minimal</td></tr>
+        <tr><td>Example</td><td>Smart home, wearables</td><td>ATM network, vending machines</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q3(c) — Network Computing vs Cloud Computing <span class="marks-tag">5 Marks</span></div>
+      <table>
+        <tr><th>Feature</th><th>Network Computing</th><th>Cloud Computing</th></tr>
+        <tr><td>Definition</td><td>Uses network of computers to share resources</td><td>Delivers IT resources over internet on demand</td></tr>
+        <tr><td>Resource location</td><td>Local network</td><td>Remote internet servers</td></tr>
+        <tr><td>Scalability</td><td>Limited</td><td>Virtually unlimited</td></tr>
+        <tr><td>Cost model</td><td>High upfront hardware cost</td><td>Pay-as-you-go</td></tr>
+        <tr><td>Accessibility</td><td>Within organization only</td><td>Anywhere, any device</td></tr>
+        <tr><td>Maintenance</td><td>User maintains hardware</td><td>Provider maintains everything</td></tr>
+        <tr><td>Example</td><td>Office LAN, Grid computing</td><td>AWS, Azure, Google Cloud</td></tr>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q6 -->
+    <div class="card">
+      <div class="card-title">Q6(a) — MAC Protocols: Responsibilities & Design Issues <span class="marks-tag">10 Marks</span></div>
+      <p style="margin-bottom:12px">MAC (Medium Access Control) protocol manages how devices <strong>share the wireless channel.</strong></p>
+      <p><strong>Responsibilities:</strong></p>
+      <ul class="note-list">
+        <li><strong>Channel Allocation</strong> — decides which device transmits when. Methods: TDMA (time slots), FDMA (frequency), CSMA (contention).</li>
+        <li><strong>Collision Avoidance</strong> — CSMA/CA detects if channel is busy. Uses random backoff timer to retry after collision.</li>
+        <li><strong>Energy Efficiency</strong> — puts devices to sleep when not transmitting. Wake up only when needed (duty cycling).</li>
+        <li><strong>Fairness</strong> — every node gets equal opportunity to access channel.</li>
+        <li><strong>Reliability</strong> — uses acknowledgements (ACK) + retransmits lost packets.</li>
+      </ul>
+      <p style="margin-top:14px"><strong>Design Issues:</strong></p>
+      <ul class="note-list">
+        <li><strong>Scalability</strong> — must handle thousands of IoT nodes without degrading.</li>
+        <li><strong>Energy Constraint</strong> — battery-powered devices need ultra-low power protocols.</li>
+        <li><strong>Mobility</strong> — IoT devices may move; protocol must handle changing topology.</li>
+        <li><strong>Heterogeneity</strong> — different device types; protocol must work across all.</li>
+        <li><strong>Latency</strong> — time-critical apps (healthcare) need low delay.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q6(b) — Data Acquisition in SCADA <span class="marks-tag">5 Marks</span></div>
+      <p style="margin-bottom:10px"><strong>SCADA = Supervisory Control and Data Acquisition.</strong> Used in industrial IoT.</p>
+      <div class="code-block">Step 1: Field Devices (sensors, PLCs) measure physical parameters
+           ↓
+Step 2: RTUs (Remote Terminal Units) collect sensor data locally
+           ↓
+Step 3: Data transmitted to Master Station via communication network
+           ↓
+Step 4: SCADA software processes & displays data on HMI screen
+           ↓
+Step 5: Operator monitors and sends control commands back
+           ↓
+Step 6: All data logged in historian database for future analysis</div>
+      <table>
+        <tr><th>Component</th><th>Role</th></tr>
+        <tr><td>Sensors/PLCs</td><td>Measure real-world data</td></tr>
+        <tr><td>RTU</td><td>Local data collection unit</td></tr>
+        <tr><td>Master Station</td><td>Central processing & control</td></tr>
+        <tr><td>HMI</td><td>Visual display for operator</td></tr>
+        <tr><td>Historian</td><td>Database for logged data</td></tr>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q7 -->
+    <div class="card">
+      <div class="card-title">Q7(a) — Short Note: 6LoWPAN <span class="marks-tag">5 Marks</span></div>
+      <p><strong>6LoWPAN = IPv6 over Low Power Wireless Personal Area Networks.</strong></p>
+      <p style="margin-top:8px">IoT devices are tiny with limited memory & power. Standard IPv6 packets are too large. 6LoWPAN <strong>compresses IPv6 headers</strong> to fit these devices. Based on IEEE 802.15.4 standard.</p>
+      <ul class="note-list" style="margin-top:10px">
+        <li>Header compression — reduces packet size significantly</li>
+        <li>Packet fragmentation & reassembly for large data</li>
+        <li>Mesh networking support</li>
+        <li>Very low power consumption</li>
+        <li>Allows every IoT device to have its own IPv6 address</li>
+        <li>Used in smart homes, healthcare, industrial IoT</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q7(b) — Short Note: IoT in Indoor Air Quality Monitoring <span class="marks-tag">5 Marks</span></div>
+      <div class="code-block">Sensors → Microcontroller → Gateway → Cloud → Dashboard/Alert</div>
+      <table style="margin-top:10px">
+        <tr><th>Sensor</th><th>Measures</th></tr>
+        <tr><td>CO2 sensor</td><td>Carbon dioxide levels</td></tr>
+        <tr><td>PM2.5 sensor</td><td>Fine dust particles</td></tr>
+        <tr><td>VOC sensor</td><td>Volatile organic compounds</td></tr>
+        <tr><td>Temperature/Humidity</td><td>Comfort levels</td></tr>
+        <tr><td>CO sensor</td><td>Carbon monoxide</td></tr>
+      </table>
+      <p style="margin-top:10px"><strong>How it works:</strong> Sensors continuously monitor air → data sent to microcontroller (Arduino/Raspberry Pi) → transmitted to cloud via WiFi → cloud analyzes and compares with safe thresholds → if unsafe levels detected: <strong>alert sent to user's phone.</strong></p>
+      <p style="margin-top:8px"><strong>Benefits:</strong> Early warning for health hazards · Automated ventilation control · Historical AQI tracking.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q7(c) — Short Note: Major Services in Cloud Computing <span class="marks-tag">5 Marks</span></div>
+      <table>
+        <tr><th>Model</th><th>Full Form</th><th>What You Get</th><th>Example</th></tr>
+        <tr><td><strong>IaaS</strong></td><td>Infrastructure as a Service</td><td>VMs, storage, networking</td><td>AWS EC2</td></tr>
+        <tr><td><strong>PaaS</strong></td><td>Platform as a Service</td><td>Dev platform, databases</td><td>Google App Engine</td></tr>
+        <tr><td><strong>SaaS</strong></td><td>Software as a Service</td><td>Ready-to-use software</td><td>Gmail, Dropbox</td></tr>
+      </table>
+      <p style="margin-top:10px"><strong>Additional Cloud Services:</strong></p>
+      <ul class="note-list">
+        <li>Storage service — store IoT sensor data (S3, Blob)</li>
+        <li>Analytics service — process & analyze IoT data</li>
+        <li>ML service — AI predictions from IoT data</li>
+        <li>Security service — identity management, encryption</li>
+      </ul>
+    </div>
+
+    <div class="strategy" style="margin-top:24px">
+      <div class="strategy-title">⏱ TIME MANAGEMENT IN EXAM</div>
+      <div class="marks-row"><span class="marks-label">Part A — 10 short questions</span><span class="marks-val">30 minutes</span></div>
+      <div class="marks-row"><span class="marks-label">Q2 — Functional Blocks + Security</span><span class="marks-val">30 minutes</span></div>
+      <div class="marks-row"><span class="marks-label">Q3 — Three differentiations</span><span class="marks-val">30 minutes</span></div>
+      <div class="marks-row"><span class="marks-label">Q6 — MAC Protocols + SCADA</span><span class="marks-val">30 minutes</span></div>
+      <div class="marks-row"><span class="marks-label">Q7 — Three short notes</span><span class="marks-val">30 minutes</span></div>
+      <div class="marks-row"><span class="marks-label">Review</span><span class="marks-val">10 minutes</span></div>
+    </div>
+  </div>
+
+  <!-- ===================== BACKUP ===================== -->
+  <div id="backup" class="section">
+    <div class="section-title" style="color:#e05a5a">Backup Topics</div>
+    <div class="section-sub">Q4 & Q5 — IN CASE PATTERN SHIFTS</div>
+
+    <div class="highlight" style="margin-bottom:20px">⚠️ Study these only if you have time left. You already know Virtualization from Module 3 and Processing Overloading from Module 4.</div>
+
+    <div class="card">
+      <div class="card-title">Q4(a) — Virtualization + Advantages <span class="marks-tag">5 Marks</span></div>
+      <p><strong>Virtualization</strong> = creating a virtual version of physical resources (servers, storage, networks). A <strong>Hypervisor</strong> software runs on physical hardware and creates multiple <strong>Virtual Machines (VMs)</strong>. Each VM acts like an independent computer. One physical server can run 10 virtual servers.</p>
+      <p style="margin-top:10px"><strong>Advantages:</strong></p>
+      <ul class="note-list">
+        <li>Cost saving — fewer physical machines needed</li>
+        <li>Efficient resource use — no hardware sits idle</li>
+        <li>Easy scaling — spin up new VMs instantly</li>
+        <li>Isolation — one VM crash doesn't affect others</li>
+        <li>Disaster recovery — VMs can be backed up easily</li>
+        <li>Energy saving — fewer physical servers = less power</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q4(b) — Processing Overloading + Advantages <span class="marks-tag">5 Marks</span></div>
+      <p><strong>Processing Overloading</strong> = when IoT system receives <strong>more data than it can process</strong> in time. Causes: thousands of sensors sending data simultaneously · limited processing power · network congestion.</p>
+      <p style="margin-top:10px"><strong>Advantages of handling it:</strong></p>
+      <ul class="note-list">
+        <li>System stays responsive under heavy load</li>
+        <li>No data loss during peak times</li>
+        <li>Better user experience</li>
+        <li>Improved system reliability</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q4(c) — Types of Processing Overloading <span class="marks-tag">5 Marks</span></div>
+      <table>
+        <tr><th>Type/Solution</th><th>Explanation</th></tr>
+        <tr><td><strong>Edge Computing</strong></td><td>Process data at device level — don't send everything to cloud</td></tr>
+        <tr><td><strong>Fog Computing</strong></td><td>Process at intermediate gateway level between device and cloud</td></tr>
+        <tr><td><strong>Load Balancing</strong></td><td>Distribute processing across multiple servers</td></tr>
+        <tr><td><strong>Data Filtering</strong></td><td>Only send important/relevant data to cloud</td></tr>
+        <tr><td><strong>Task Scheduling</strong></td><td>Prioritize critical tasks, defer non-critical ones</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q5(a) — Common Data Types in IoT <span class="marks-tag">5 Marks</span></div>
+      <table>
+        <tr><th>Data Type</th><th>Description</th><th>Example</th></tr>
+        <tr><td>Scalar</td><td>Single numeric value</td><td>Temperature = 36.5°C</td></tr>
+        <tr><td>Location</td><td>GPS coordinates</td><td>Lat/Long of vehicle</td></tr>
+        <tr><td>Image</td><td>Photo data</td><td>Security camera snapshot</td></tr>
+        <tr><td>Video</td><td>Continuous frames</td><td>CCTV footage</td></tr>
+        <tr><td>Time-series</td><td>Data over time intervals</td><td>Heart rate every second</td></tr>
+        <tr><td>Binary</td><td>On/Off states</td><td>Door open/closed</td></tr>
+        <tr><td>Metadata</td><td>Data about data</td><td>Device ID, timestamp</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Q5(b) — Factors Influencing Sensor Choice <span class="marks-tag">10 Marks</span></div>
+      <table>
+        <tr><th>Factor</th><th>Explanation</th></tr>
+        <tr><td>Accuracy</td><td>How precise the measurement is</td></tr>
+        <tr><td>Range</td><td>Min & max values it can measure</td></tr>
+        <tr><td>Sensitivity</td><td>Smallest change it can detect</td></tr>
+        <tr><td>Power consumption</td><td>Battery-operated devices need low-power sensors</td></tr>
+        <tr><td>Cost</td><td>Budget constraints in large deployments</td></tr>
+        <tr><td>Size</td><td>Must fit in the device/environment</td></tr>
+        <tr><td>Response time</td><td>How fast it reacts to changes</td></tr>
+        <tr><td>Durability</td><td>Must survive environment (heat, water, dust)</td></tr>
+        <tr><td>Communication protocol</td><td>Must support required protocol (I2C, SPI, analog)</td></tr>
+        <tr><td>Calibration</td><td>How often it needs recalibration</td></tr>
+      </table>
+    </div>
+
+    <div class="card" style="border-color:#2a2000">
+      <div class="card-title" style="color:var(--accent)">🏁 Final Advice Before You Walk In</div>
+      <ul class="note-list">
+        <li>Sleep now — tired brain forgets everything</li>
+        <li>Read the cheat sheet (Part A tab) 30 mins before exam</li>
+        <li>Attempt Part A first — builds confidence, guaranteed marks</li>
+        <li>Don't panic if you see unfamiliar question — skip and attempt your prepared ones</li>
+        <li>Write neatly with diagrams — examiners reward structured answers</li>
+        <li>You came in with zero knowledge. You're walking in prepared. Go get those marks! 💪</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+</script>
+</body>
+</html>
