@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRM Exam Q&A — Last 5 Hours</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #141417;
+    --bg3: #1a1a1e;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e8ec;
+    --muted: #7a7a8a;
+    --accent: #7c6af7;
+    --accent2: #a594f9;
+    --fire: #f97316;
+    --green: #22c55e;
+    --blue: #38bdf8;
+    --card-bg: #18181c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 40px 24px 28px;
+    max-width: 820px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+  }
+  h1 span { color: var(--accent2); }
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .timer-box {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 12px 18px;
+    text-align: center;
+    min-width: 100px;
+    flex-shrink: 0;
+  }
+  .timer-label { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; }
+  .timer-val { font-size: 22px; font-weight: 600; color: var(--fire); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+
+  /* PROGRESS */
+  .progress-section {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 20px 24px 16px;
+  }
+  .prog-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .prog-label { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .prog-count { font-size: 12px; color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
+  .prog-track {
+    background: var(--bg3);
+    border-radius: 4px;
+    height: 5px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .prog-fill {
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* FILTERS */
+  .filters {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 24px 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    font-size: 12px;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    color: var(--muted);
+    background: transparent;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent2); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* SECTION LABEL */
+  .section-label {
+    max-width: 820px;
+    margin: 0 auto 10px;
+    padding: 0 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Q CARDS */
+  .q-list { max-width: 820px; margin: 0 auto; padding: 0 24px 60px; }
+  .q-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .q-card:hover { border-color: var(--border2); }
+  .q-card.done { border-color: rgba(34,197,94,0.3); }
+  .q-card.open { border-color: rgba(124,106,247,0.4); }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 18px;
+    cursor: pointer;
+    gap: 12px;
+    user-select: none;
+  }
+  .q-header:hover { background: rgba(255,255,255,0.02); }
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .q-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.5; }
+  .q-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid;
+    letter-spacing: 0.03em;
+  }
+  .badge-fire { color: var(--fire); border-color: rgba(249,115,22,0.3); background: rgba(249,115,22,0.08); }
+  .badge-parta { color: var(--blue); border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.08); }
+  .badge-partb { color: var(--accent2); border-color: rgba(165,148,249,0.3); background: rgba(165,148,249,0.08); }
+  .badge-done { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); }
+
+  .q-arrow {
+    color: var(--muted);
+    font-size: 16px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-card.open .q-arrow { transform: rotate(180deg); }
+
+  /* ANSWER BODY */
+  .q-body {
+    display: none;
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .q-card.open .q-body { display: block; }
+
+  .answer-section { margin-top: 14px; }
+  .answer-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .answer-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #c8c8d4;
+    line-height: 1.75;
+  }
+  .point-row { display: flex; gap: 10px; margin-bottom: 5px; }
+  .point-row:last-child { margin-bottom: 0; }
+  .point-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 9px;
+  }
+
+  .mark-btn {
+    margin-top: 14px;
+    padding: 7px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    font-size: 12px;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .mark-btn:hover { border-color: var(--green); color: var(--green); }
+  .mark-btn.marked { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.4); color: var(--green); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    h1 { font-size: 20px; }
+    .q-title { font-size: 13px; }
+    .header-top { flex-direction: column; }
+    .timer-box { align-self: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="header-tag">OEC-CS-602(I) · B.Tech VI Semester</div>
+      <h1>HRM Exam <span>Q&A</span></h1>
+      <div class="header-sub">20 questions · Exam-ready answers · Study only these</div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-label">time left</div>
+      <div class="timer-val" id="timer">5:00:00</div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-section">
+  <div class="prog-row">
+    <span class="prog-label">progress</span>
+    <span class="prog-count" id="prog-count">0 / 20 studied</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterQ('all',this)">All (20)</button>
+  <button class="filter-btn" onclick="filterQ('parta',this)">Part A — short (10)</button>
+  <button class="filter-btn" onclick="filterQ('partb',this)">Part B — long (10)</button>
+  <button class="filter-btn" onclick="filterQ('undone',this)">Not studied yet</button>
+</div>
+
+<div class="q-list" id="q-list"></div>
+
+<script>
+const questions = [
+  {
+    id:1, type:'parta', fire:true,
+    q: 'Define HRM. What are its objectives?',
+    answer: [
+      {label:'Definition', text:'HRM is the process of planning, organizing, directing and controlling the procurement, development, compensation, integration and maintenance of people so that individual, organizational and social objectives are achieved.'},
+      {label:'Objectives', points:[
+        'Societal objective: be legally and ethically responsible to the needs of society',
+        'Organizational objective: assist the organization in achieving its primary goals',
+        'Functional objective: maintain HR department contribution at an appropriate level',
+        'Personal objective: help employees achieve their personal goals to enhance individual contribution'
+      ]}
+    ]
+  },
+  {
+    id:2, type:'parta', fire:true,
+    q: 'What is HRIS? Why is it important?',
+    answer: [
+      {label:'Definition', text:'HRIS (Human Resource Information System) is a software-based system that stores, manages, retrieves and analyzes employee data to support HR decision-making.'},
+      {label:'Importance / uses', points:[
+        'Maintains employee records (attendance, payroll, leave)',
+        'Speeds up recruitment and onboarding processes',
+        'Supports performance appraisal and training tracking',
+        'Helps in HR planning and workforce forecasting',
+        'Reduces paperwork and administrative costs'
+      ]}
+    ]
+  },
+  {
+    id:3, type:'parta', fire:true,
+    q: 'Differentiate between Training and Development.',
+    answer: [
+      {label:'Training', text:'Short-term, job-specific, aimed at improving current performance. Focus: skills for present role. Example: teaching a new recruit how to use software.'},
+      {label:'Development', text:'Long-term, broader in scope, aimed at preparing employees for future roles. Focus: overall growth and potential. Example: leadership programs for future managers.'},
+      {label:'Key difference', text:'Training = doing the current job better. Development = preparing for future responsibilities.'}
+    ]
+  },
+  {
+    id:4, type:'parta', fire:true,
+    q: 'What is succession planning?',
+    answer: [
+      {label:'Definition', text:'Succession planning is the process of identifying and developing internal employees to fill key leadership or critical positions in the future, ensuring business continuity.'},
+      {label:'Steps', points:[
+        'Identify critical positions in the organization',
+        'Assess current employees for future potential',
+        'Provide development opportunities (training, mentoring)',
+        'Monitor and update the succession plan regularly'
+      ]}
+    ]
+  },
+  {
+    id:5, type:'parta', fire:true,
+    q: 'What is performance appraisal? Name any two methods.',
+    answer: [
+      {label:'Definition', text:'Performance appraisal is the systematic evaluation of an employee\'s job performance against established standards to make decisions on promotions, pay, training needs, and development.'},
+      {label:'Two methods', points:[
+        'Rating scale method: employees are rated on traits like quality of work, punctuality, teamwork on a scale of 1–5',
+        'MBO (Management by Objectives): manager and employee jointly set goals; performance is evaluated based on goal achievement'
+      ]}
+    ]
+  },
+  {
+    id:6, type:'parta', fire:false,
+    q: 'What is a grievance? How is it handled?',
+    answer: [
+      {label:'Definition', text:'A grievance is any real or imagined feeling of dissatisfaction that an employee has regarding their job, working conditions, pay, or treatment by management.'},
+      {label:'Grievance handling procedure', points:[
+        'Step 1: Employee informally raises complaint with immediate supervisor',
+        'Step 2: Written complaint submitted to department head',
+        'Step 3: HR department reviews and investigates',
+        'Step 4: If unresolved, referred to senior management',
+        'Step 5: Arbitration or labour court (last resort)'
+      ]}
+    ]
+  },
+  {
+    id:7, type:'parta', fire:false,
+    q: 'What is induction / socialization in HRM?',
+    answer: [
+      {label:'Induction', text:'Induction is the formal process of introducing a new employee to the organization — its policies, culture, job role, colleagues, and work environment. Goal: reduce anxiety and speed up productivity.'},
+      {label:'Socialization', text:'Organizational socialization is the ongoing process by which a new employee learns the values, norms, and behaviours needed to fit into the organization\'s culture.'},
+      {label:'Stages of socialization', points:[
+        'Pre-arrival: expectations before joining',
+        'Encounter: reality on first days at work',
+        'Metamorphosis: full adaptation to culture and role'
+      ]}
+    ]
+  },
+  {
+    id:8, type:'parta', fire:false,
+    q: 'What is job specification? Differentiate from job description.',
+    answer: [
+      {label:'Job Description', text:'A written document that states what the job involves — duties, responsibilities, working conditions, and reporting relationships.'},
+      {label:'Job Specification', text:'A document that states the qualifications, skills, experience, and personal attributes required in the person who will do the job.'},
+      {label:'Simple way to remember', text:'Job Description = about the JOB. Job Specification = about the PERSON.'}
+    ]
+  },
+  {
+    id:9, type:'parta', fire:false,
+    q: 'Define HR Audit. Why is it required?',
+    answer: [
+      {label:'Definition', text:'HR Audit is a systematic, formal examination of HR policies, procedures, documentation, and practices to assess their effectiveness, legal compliance, and alignment with organizational goals.'},
+      {label:'Why it is required', points:[
+        'Ensures compliance with labour laws and regulations',
+        'Identifies gaps in HR policies and practices',
+        'Improves efficiency of HR functions',
+        'Helps in strategic HR planning',
+        'Builds accountability in the HR department'
+      ]}
+    ]
+  },
+  {
+    id:10, type:'parta', fire:false,
+    q: 'What is Corporate Social Responsibility (CSR)?',
+    answer: [
+      {label:'Definition', text:'CSR is a company\'s commitment to operating in an ethical and sustainable manner while contributing positively to society and the environment — beyond its legal obligations and profit motive.'},
+      {label:'Areas of CSR', points:[
+        'Environmental responsibility: reducing pollution, going green',
+        'Social responsibility: community development, education',
+        'Ethical responsibility: fair trade, honest advertising',
+        'Philanthropic responsibility: donations, volunteering'
+      ]}
+    ]
+  },
+  {
+    id:11, type:'partb', fire:true,
+    q: 'What is HRM? Explain its objectives, functions, and challenges in the 21st century. (10–15 marks)',
+    answer: [
+      {label:'Definition', text:'HRM is the process of recruiting, selecting, training, developing, compensating, and maintaining human resources in an organization to achieve individual, organizational, and societal goals.'},
+      {label:'Functions of HRM', points:[
+        'Managerial functions: Planning, Organizing, Directing, Controlling',
+        'Operative functions: Procurement (recruitment, selection), Development (training), Compensation, Maintenance (welfare, safety)',
+        'Advisory functions: advising top management and departmental heads on HR matters'
+      ]},
+      {label:'Challenges in 21st century', points:[
+        'Managing a diverse, multi-generational workforce',
+        'Adapting to technological change and automation (AI replacing jobs)',
+        'Talent acquisition and retention in competitive markets',
+        'Work-life balance and remote work management',
+        'Ethical issues: data privacy, discrimination, fair pay',
+        'Globalization: managing cross-cultural teams',
+        'Changing employee expectations and rising demand for empowerment'
+      ]},
+      {label:'Conclusion line (write this)', text:'HRM has evolved from a purely administrative function to a strategic partner in achieving organizational goals.'}
+    ]
+  },
+  {
+    id:12, type:'partb', fire:true,
+    q: 'What is Human Resource Planning? Explain its significance and process in detail. (15 marks)',
+    answer: [
+      {label:'Definition', text:'HRP is the process of forecasting an organization\'s future HR requirements and ensuring the right number of people with the right skills are available at the right time and place.'},
+      {label:'Significance', points:[
+        'Prevents overstaffing and understaffing',
+        'Reduces recruitment costs through advance planning',
+        'Helps identify training and development needs',
+        'Supports career planning and succession planning',
+        'Aligns HR strategy with overall business strategy'
+      ]},
+      {label:'Process of HRP — write all 7 steps', points:[
+        '1. Analysing organizational objectives and plans',
+        '2. Assessing current HR inventory (skills, qualifications, departments)',
+        '3. Forecasting demand for human resources (how many people needed)',
+        '4. Forecasting supply of human resources (internal + external sources)',
+        '5. Identifying the gap (surplus or shortage)',
+        '6. Formulating HR action plan (hire, train, promote, transfer)',
+        '7. Monitoring and review of the plan'
+      ]},
+      {label:'Forecasting methods', points:[
+        'Managerial judgment, Delphi technique, Trend analysis, Ratio analysis, Regression analysis'
+      ]}
+    ]
+  },
+  {
+    id:13, type:'partb', fire:true,
+    q: 'What is Recruitment? Explain all sources of recruitment in detail. (10–15 marks)',
+    answer: [
+      {label:'Definition', text:'Recruitment is the process of searching for and attracting qualified candidates for a job vacancy, creating a pool of applicants from which selections can be made.'},
+      {label:'Internal sources', points:[
+        'Promotion: moving employees to higher positions',
+        'Transfer: shifting employees from one department to another',
+        'Employee referrals: existing employees recommend candidates',
+        'Retired/former employees: called back when needed',
+        'Internal job postings: vacancy advertised on notice board/intranet'
+      ]},
+      {label:'External sources', points:[
+        'Campus recruitment: hiring fresh graduates from colleges',
+        'Job portals: Naukri, LinkedIn, Indeed etc.',
+        'Employment agencies / placement consultants',
+        'Walk-in interviews',
+        'Advertisements: newspapers, online job ads',
+        'E-recruitment: entire process done online',
+        'Labour contractors: for unskilled/semi-skilled jobs'
+      ]},
+      {label:'Conclusion line', text:'Each source has advantages; organizations choose based on job level, urgency, cost, and availability of talent.'}
+    ]
+  },
+  {
+    id:14, type:'partb', fire:true,
+    q: 'Explain the selection process in detail from screening to final appointment. (10–15 marks)',
+    answer: [
+      {label:'Definition', text:'Selection is the process of choosing the most suitable candidate from the pool of applicants generated through recruitment.'},
+      {label:'Steps in selection process — write all', points:[
+        '1. Preliminary screening / application review: eliminating unqualified applicants',
+        '2. Application blank / form: getting detailed background information',
+        '3. Written tests: aptitude, intelligence, personality, technical tests',
+        '4. Interview: preliminary, structured, unstructured, panel, stress interview',
+        '5. Reference and background check: verifying past employment and credentials',
+        '6. Medical / physical examination: ensuring physical fitness for the role',
+        '7. Final selection / job offer letter issued',
+        '8. Placement and induction: placing the employee in the right job'
+      ]},
+      {label:'Most important step', text:'The interview is considered the most critical step as it assesses communication, personality, and job fit directly.'}
+    ]
+  },
+  {
+    id:15, type:'partb', fire:true,
+    q: 'What is Job Analysis? Explain its components — job description and job specification. (10 marks)',
+    answer: [
+      {label:'Job Analysis definition', text:'Job analysis is the systematic process of collecting and analyzing information about a job — its duties, responsibilities, required skills, outcomes, and work environment.'},
+      {label:'Uses of job analysis', points:[
+        'Basis for recruitment and selection',
+        'Helps in training needs identification',
+        'Used in performance appraisal criteria setting',
+        'Helps in job evaluation and compensation decisions'
+      ]},
+      {label:'Job Description (JD)', points:[
+        'What the job is — title, location, department',
+        'Duties and responsibilities of the job',
+        'Working conditions (hours, travel, hazards)',
+        'Reporting relationships (who reports to whom)'
+      ]},
+      {label:'Job Specification (JS)', points:[
+        'Who is needed for the job',
+        'Education and qualifications required',
+        'Work experience required',
+        'Physical and mental skills needed',
+        'Personality traits and competencies required'
+      ]}
+    ]
+  },
+  {
+    id:16, type:'partb', fire:true,
+    q: 'Explain Training Need Analysis (TNA) and training methods — on-the-job and off-the-job. (15 marks)',
+    answer: [
+      {label:'TNA definition', text:'TNA is the process of identifying the gap between existing employee performance and desired performance to determine what training is needed, for whom, and why.'},
+      {label:'Levels of TNA', points:[
+        'Organizational level: what training aligns with company goals?',
+        'Task/operational level: what skills are needed for each job?',
+        'Individual level: what are each employee\'s specific gaps?'
+      ]},
+      {label:'On-the-job training methods', points:[
+        'Job rotation: moving employees across different roles',
+        'Coaching: one-on-one guidance by a senior',
+        'Mentoring: long-term relationship for career development',
+        'Apprenticeship: learning while working under an expert',
+        'Understudy / job shadowing: observing a senior on the job'
+      ]},
+      {label:'Off-the-job training methods', points:[
+        'Lectures and classroom training',
+        'Case study method: analysing real business problems',
+        'Role play: simulating real-life work situations',
+        'Simulation / vestibule training: replicated work environment',
+        'E-learning / online courses',
+        'Seminars and workshops'
+      ]},
+      {label:'ADDIE model (bonus point)', text:'Analyse → Design → Develop → Implement → Evaluate. Links training to organizational strategy.'}
+    ]
+  },
+  {
+    id:17, type:'partb', fire:true,
+    q: 'Explain performance appraisal methods — traditional and modern. (15 marks)',
+    answer: [
+      {label:'Definition', text:'Performance appraisal is a systematic evaluation of an employee\'s work performance and potential for development, used for pay, promotions, and training decisions.'},
+      {label:'Traditional methods', points:[
+        'Rating scale: traits like attendance, teamwork rated 1 to 5',
+        'Checklist method: appraiser checks applicable statements',
+        'Critical incident: records of outstandingly good or bad incidents',
+        'Essay method: written narrative description of performance',
+        'Ranking method: employees ranked from best to worst',
+        'Paired comparison: each employee compared with every other'
+      ]},
+      {label:'Modern methods', points:[
+        'MBO (Management by Objectives): goals set jointly; evaluated on achievement',
+        '360-degree feedback: input from peers, subordinates, superiors, self, and customers',
+        'Assessment centres: multiple exercises, tests, and simulations',
+        'Potential appraisal: assesses future capability, not just current performance',
+        'BARS (Behaviourally Anchored Rating Scales): specific behaviours linked to ratings'
+      ]},
+      {label:'Conclusion line', text:'Modern methods are more objective and developmental compared to traditional methods which can be biased and subjective.'}
+    ]
+  },
+  {
+    id:18, type:'partb', fire:true,
+    q: 'What is employee compensation? Explain its components and determinants. (10–15 marks)',
+    answer: [
+      {label:'Definition', text:'Employee compensation refers to all forms of financial and non-financial rewards given to employees in exchange for their work and contribution to the organization.'},
+      {label:'Components of compensation', points:[
+        'Basic salary: fixed regular pay',
+        'Allowances: HRA (house rent), DA (dearness), transport, medical',
+        'Incentives and bonuses: performance-based extra pay',
+        'Benefits: PF (provident fund), gratuity, ESI, health insurance, leave encashment',
+        'Perquisites (perks): company car, housing, club memberships for senior employees'
+      ]},
+      {label:'Determinants of compensation', points:[
+        'Job worth / job evaluation: what is the job\'s value to the organization',
+        'Employee\'s performance and experience',
+        'Cost of living and inflation (DA)',
+        'Prevailing market rates / industry standards',
+        'Organization\'s ability to pay (profitability)',
+        'Labour union pressure and collective bargaining',
+        'Government legislation (minimum wage laws)'
+      ]}
+    ]
+  },
+  {
+    id:19, type:'partb', fire:false,
+    q: 'What are Industrial Relations? Explain its objectives and role in grievance handling. (10–15 marks)',
+    answer: [
+      {label:'Definition', text:'Industrial relations refers to the dynamic relationship between management (employers) and workers (employees/unions), including all forms of interaction between them.'},
+      {label:'Objectives of IR', points:[
+        'Maintain industrial peace and avoid conflicts/strikes',
+        'Protect workers from exploitation',
+        'Improve working conditions and employee welfare',
+        'Promote cooperation between employer and employees',
+        'Ensure fair wages and benefits through collective bargaining'
+      ]},
+      {label:'Grievance handling process', points:[
+        'Level 1: Employee raises issue with immediate supervisor informally',
+        'Level 2: Written complaint submitted to department head',
+        'Level 3: HR department investigates and mediates',
+        'Level 4: Senior management review if still unresolved',
+        'Level 5: Labour court / arbitration as a last resort'
+      ]},
+      {label:'Employee welfare', text:'Statutory welfare (canteen, restrooms, crèche) and voluntary welfare (housing, education, recreation) provided by the employer beyond wages.'}
+    ]
+  },
+  {
+    id:20, type:'partb', fire:false,
+    q: 'Explain contemporary issues in HRM — ethics, CSR, and knowledge management. (15 marks)',
+    answer: [
+      {label:'Business ethics in HRM', points:[
+        'Fair and non-discriminatory hiring practices',
+        'Maintaining employee confidentiality and data privacy',
+        'Providing honest and unbiased performance appraisals',
+        'Equal pay for equal work regardless of gender/caste',
+        'Ethical leadership and setting the right organizational culture'
+      ]},
+      {label:'CSR and HRM', text:'HRM plays a key role in CSR by ensuring employee welfare, fair labour practices, diversity and inclusion, and community engagement. Ethics and CSR are intertwined — ethical HRM practices build a socially responsible organization.'},
+      {label:'Knowledge management', points:[
+        'Process of capturing, sharing, and leveraging organizational knowledge',
+        'HR\'s role: building a learning culture, knowledge-sharing systems, mentoring programs',
+        'KM tools: intranets, wikis, communities of practice, e-learning platforms'
+      ]},
+      {label:'HR in virtual organizations', text:'Managing remote/virtual teams requires digital HRM tools, online communication, virtual onboarding, and trust-based performance management rather than physical supervision.'}
+    ]
+  }
+];
+
+let doneSet = new Set();
+let currentFilter = 'all';
+
+function renderList() {
+  const list = document.getElementById('q-list');
+  list.innerHTML = '';
+
+  const filtered = questions.filter(q => {
+    if (currentFilter === 'parta') return q.type === 'parta';
+    if (currentFilter === 'partb') return q.type === 'partb';
+    if (currentFilter === 'undone') return !doneSet.has(q.id);
+    return true;
+  });
+
+  let partaShown = false, partbShown = false;
+
+  filtered.forEach(q => {
+    if (q.type === 'parta' && !partaShown && (currentFilter === 'all' || currentFilter === 'parta' || currentFilter === 'undone')) {
+      const d = document.createElement('div');
+      d.className = 'section-label';
+      d.textContent = 'Part A — short answers (1.5 marks each)';
+      list.appendChild(d);
+      partaShown = true;
+    }
+    if (q.type === 'partb' && !partbShown && (currentFilter === 'all' || currentFilter === 'partb' || currentFilter === 'undone')) {
+      const d = document.createElement('div');
+      d.className = 'section-label';
+      d.style.marginTop = '24px';
+      d.textContent = 'Part B — long answers (attempt any 4 of 6)';
+      list.appendChild(d);
+      partbShown = true;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'q-card' + (doneSet.has(q.id) ? ' done' : '');
+    card.id = 'card-' + q.id;
+
+    let bodyHtml = '<div class="q-body">';
+    q.answer.forEach(section => {
+      bodyHtml += `<div class="answer-section"><div class="answer-section-label">${section.label}</div><div class="answer-block">`;
+      if (section.text) {
+        bodyHtml += section.text;
+      }
+      if (section.points) {
+        section.points.forEach(p => {
+          bodyHtml += `<div class="point-row"><div class="point-dot"></div><div>${p}</div></div>`;
+        });
+      }
+      bodyHtml += '</div></div>';
+    });
+    bodyHtml += `<button class="mark-btn${doneSet.has(q.id) ? ' marked' : ''}" onclick="toggleDone(${q.id}, event)">${doneSet.has(q.id) ? '✓ Studied' : 'Mark as studied'}</button>`;
+    bodyHtml += '</div>';
+
+    card.innerHTML = `
+      <div class="q-header" onclick="toggleCard(${q.id})">
+        <div style="flex:1">
+          <div class="q-num">Q${q.id}</div>
+          <div class="q-title">${q.q}</div>
+          <div class="q-badges">
+            ${q.fire ? '<span class="badge badge-fire">Repeated every year</span>' : ''}
+            <span class="badge ${q.type === 'parta' ? 'badge-parta' : 'badge-partb'}">${q.type === 'parta' ? 'Part A' : 'Part B'}</span>
+            ${doneSet.has(q.id) ? '<span class="badge badge-done">Studied</span>' : ''}
+          </div>
+        </div>
+        <div class="q-arrow">&#x2304;</div>
+      </div>
+      ${bodyHtml}
+    `;
+    list.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  card.classList.toggle('open');
+}
+
+function toggleDone(id, e) {
+  e.stopPropagation();
+  if (doneSet.has(id)) doneSet.delete(id);
+  else doneSet.add(id);
+  renderList();
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.add('open');
+}
+
+function filterQ(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+function updateProgress() {
+  const done = doneSet.size;
+  const total = questions.length;
+  document.getElementById('prog-count').textContent = done + ' / ' + total + ' studied';
+  document.getElementById('prog-fill').style.width = Math.round((done / total) * 100) + '%';
+}
+
+// Countdown timer (5 hours)
+const endTime = Date.now() + 5 * 60 * 60 * 1000;
+function updateTimer() {
+  const remaining = Math.max(0, endTime - Date.now());
+  const h = Math.floor(remaining / 3600000);
+  const m = Math.floor((remaining % 3600000) / 60000);
+  const s = Math.floor((remaining % 60000) / 1000);
+  document.getElementById('timer').textContent =
+    String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  if (remaining > 0) setTimeout(updateTimer, 1000);
+  else document.getElementById('timer').style.color = '#ef4444';
+}
+updateTimer();
+
+renderList();
+</script>
+</body>
+</html>
