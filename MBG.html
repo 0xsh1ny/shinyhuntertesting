@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bhagavad Gita — Exam Ready</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #1e1e1e;
+    --gold: #c9a84c;
+    --gold-dim: #7a6230;
+    --amber: #e8b84b;
+    --text: #d4cfc8;
+    --muted: #6b6560;
+    --white: #f0ece4;
+    --saffron: #e07b39;
+    --blue: #4a7fa5;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 36px 24px 28px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .om {
+    font-size: 2rem;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  header p {
+    color: var(--gold);
+    font-size: 0.78rem;
+    margin-top: 6px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    background: #1a1510;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Nav */
+  nav {
+    background: #0d0d0d;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  nav a:hover {
+    color: var(--gold);
+    border-color: var(--gold-dim);
+    background: #1a1510;
+  }
+
+  /* Main */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* Section headers */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gold-dim);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Part divider */
+  .part-divider {
+    margin: 48px 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .part-divider h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--saffron);
+    white-space: nowrap;
+  }
+
+  .part-divider::before,
+  .part-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--saffron), transparent);
+    opacity: 0.4;
+  }
+
+  /* Q Cards */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold-dim);
+    margin-bottom: 16px;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .q-card:hover {
+    border-left-color: var(--gold);
+  }
+
+  .q-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    user-select: none;
+  }
+
+  .q-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--gold);
+    background: #1a1510;
+    border: 1px solid var(--gold-dim);
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    margin-top: 2px;
+    min-width: 36px;
+    text-align: center;
+  }
+
+  .q-title {
+    color: var(--white);
+    font-size: 0.88rem;
+    font-weight: 500;
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  .q-marks {
+    font-size: 0.68rem;
+    color: var(--amber);
+    white-space: nowrap;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  .toggle-icon {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 2px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .q-card.open .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .q-body {
+    display: none;
+    padding: 0 18px 20px 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .q-card.open .q-body {
+    display: block;
+  }
+
+  /* Answer content */
+  .answer-text {
+    padding-top: 16px;
+  }
+
+  .answer-text h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 20px 0 8px;
+  }
+
+  .answer-text h3:first-child { margin-top: 0; }
+
+  .answer-text p {
+    color: var(--text);
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+  }
+
+  .answer-text ul, .answer-text ol {
+    padding-left: 18px;
+    margin-bottom: 10px;
+  }
+
+  .answer-text li {
+    color: var(--text);
+    font-size: 0.88rem;
+    margin-bottom: 5px;
+  }
+
+  .key-term {
+    color: var(--amber);
+    font-weight: 500;
+  }
+
+  .sanskrit {
+    color: var(--saffron);
+    font-style: italic;
+  }
+
+  .highlight-box {
+    background: #141009;
+    border: 1px solid var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.86rem;
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.84rem;
+  }
+
+  th {
+    background: #1a1510;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: #0d0d0d; }
+
+  /* Short answer special style */
+  .short-ans {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .short-ans:last-child { border-bottom: none; }
+
+  .short-q {
+    color: var(--muted);
+    font-size: 0.82rem;
+    flex: 1;
+  }
+
+  .short-a {
+    color: var(--amber);
+    font-size: 0.88rem;
+    font-weight: 500;
+    flex: 1.2;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="om">ॐ</span>
+  <h1>Message of Bhagavad Gita</h1>
+  <p>AC-02 · B.Tech 6th Semester · Exam Ready Notes</p>
+  <div class="badge-row">
+    <span class="badge">18 Chapters</span>
+    <span class="badge">700 Verses</span>
+    <span class="badge">75 Marks</span>
+    <span class="badge">3 Hours</span>
+    <span class="badge">15 Answers</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#parta">Part A — Short</a>
+  <a href="#q4">Q4 Introduction</a>
+  <a href="#q7">Q7 Relevance</a>
+  <a href="#q2">Q2 Yoga + Gunas</a>
+  <a href="#q3">Q3 Karma + Yagya</a>
+</nav>
+
+<main>
+
+  <!-- PART A -->
+  <div class="part-divider" id="parta">
+    <h2>Part A — Short Answers · 1.5 marks each · All Compulsory</h2>
+  </div>
+
+  <div class="q-card open" id="parta-all">
+    <div class="q-header" onclick="toggle(this)">
+      <span class="q-num">A</span>
+      <span class="q-title">All 10 Short Answers — Quick Reference</span>
+      <span class="q-marks">10 × 1.5 = 15 marks</span>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-text">
+
+        <div class="short-ans">
+          <span class="short-q">1. Name of Arjuna's conch?</span>
+          <span class="short-a">→ <span class="key-term">Devadatta</span></span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">2. Which chapter is Karma Yoga?</span>
+          <span class="short-a">→ <span class="key-term">Chapter 3</span></span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">3. Name of 9th chapter?</span>
+          <span class="short-a">→ <span class="key-term">Raja Vidya Raja Guhya Yoga</span> (Royal Knowledge, Royal Secret)</span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">4. Which tree is like Shribhagvan?</span>
+          <span class="short-a">→ <span class="key-term">Ashvattha (Peepal Tree)</span></span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">5. Whose minister/secretary is Sanjay?</span>
+          <span class="short-a">→ <span class="key-term">King Dhritarashtra</span></span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">6. On which Hindu date was Gita recited?</span>
+          <span class="short-a">→ <span class="key-term">Ekadashi</span> (11th day), Shukla Paksha, Margashirsha month — called <span class="key-term">Gita Jayanti</span></span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">7. How many chapters & verses in Gita?</span>
+          <span class="short-a">→ <span class="key-term">18 chapters, 700 verses (shlokas)</span></span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">8. Arjuna asked Krishna to take chariot where & why?</span>
+          <span class="short-a">→ <span class="key-term">Between the two armies</span> — to see who he must fight</span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">9. Why did Arjuna put down his bow?</span>
+          <span class="short-a">→ <span class="key-term">Grief and confusion (Vishada)</span> — he saw relatives, teachers and loved ones on opposite side and couldn't bear to fight them</span>
+        </div>
+
+        <div class="short-ans">
+          <span class="short-q">10. Define Varna-Sankara.</span>
+          <span class="short-a">→ <span class="key-term">Mixing of castes/social orders</span> due to breakdown of Dharma, leading to social chaos — Arjuna feared this as a consequence of war</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PART B -->
+  <div class="part-divider" id="partb">
+    <h2>Part B — Long Answers · Attempt any 4</h2>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card open" id="q4">
+    <div class="q-header" onclick="toggle(this)">
+      <span class="q-num">Q4</span>
+      <span class="q-title">Give an Introduction of Bhagavad Gita in detail.</span>
+      <span class="q-marks">15 marks</span>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-text">
+
+        <h3>Introduction / Background</h3>
+        <p>The Bhagavad Gita is one of the most sacred texts of Hindu philosophy. It is part of the <span class="key-term">Mahabharata</span>, specifically in the <span class="key-term">Bhishma Parva (chapters 23–40)</span>. It contains <span class="key-term">18 chapters and 700 verses (shlokas)</span>. The word <span class="sanskrit">"Gita"</span> means song, and <span class="sanskrit">"Bhagavad"</span> means of God — so it is the <span class="key-term">"Song of God."</span></p>
+
+        <h3>The Setting</h3>
+        <p>The Gita takes place on the battlefield of <span class="key-term">Kurukshetra</span>, just before the great war between the <span class="key-term">Pandavas and Kauravas</span>. Arjuna sees his relatives, teachers, and loved ones on the opposite side. He is overcome with grief and confusion (<span class="key-term">Vishada</span>) and refuses to fight. He puts down his bow <span class="key-term">Gandiva</span> and surrenders to Krishna for guidance.</p>
+
+        <h3>Teacher and Student</h3>
+        <ul>
+          <li><span class="key-term">Teacher:</span> Lord Sri Krishna (charioteer and guide)</li>
+          <li><span class="key-term">Student:</span> Arjuna (warrior, devotee)</li>
+        </ul>
+        <p>This dialogue is also called <span class="key-term">Krishnarjuna Samvad.</span></p>
+
+        <h3>18 Chapters — Key Ones</h3>
+        <table>
+          <tr><th>Chapter</th><th>Name</th><th>Theme</th></tr>
+          <tr><td>Ch. 1</td><td>Arjuna Vishada Yoga</td><td>Arjuna's grief and confusion</td></tr>
+          <tr><td>Ch. 2</td><td>Sankhya Yoga</td><td>Self-knowledge, soul is eternal</td></tr>
+          <tr><td>Ch. 3</td><td>Karma Yoga</td><td>Path of selfless action</td></tr>
+          <tr><td>Ch. 9</td><td>Raja Vidya Raja Guhya Yoga</td><td>Royal knowledge, devotion</td></tr>
+          <tr><td>Ch. 11</td><td>Vishwarupa Darshana</td><td>Universal form of Krishna</td></tr>
+          <tr><td>Ch. 18</td><td>Moksha Sanyasa Yoga</td><td>Liberation, conclusion</td></tr>
+        </table>
+
+        <h3>Core Message — Three Paths</h3>
+        <ul>
+          <li><span class="key-term">Gyana Yoga</span> — path of knowledge and wisdom</li>
+          <li><span class="key-term">Karma Yoga</span> — path of action without attachment</li>
+          <li><span class="key-term">Bhakti Yoga</span> — path of devotion to God</li>
+        </ul>
+
+        <div class="highlight-box">
+          Central teaching: "Do your duty without attachment to results" — <strong>Nishkama Karma</strong>
+        </div>
+
+        <h3>Relevance and Legacy</h3>
+        <p>The Gita is not just a religious text — it is a guide for life. Leaders like <span class="key-term">Mahatma Gandhi, Swami Vivekananda, and Bal Gangadhar Tilak</span> drew deep inspiration from it. It teaches how to handle duty, stress, relationships, and purpose with equanimity.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-card" id="q7">
+    <div class="q-header" onclick="toggle(this)">
+      <span class="q-num">Q7</span>
+      <span class="q-title">Write the relevance of Bhagavad Gita in the current era.</span>
+      <span class="q-marks">15 marks</span>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-text">
+
+        <h3>Introduction</h3>
+        <p>The Bhagavad Gita was spoken thousands of years ago, but its message is timeless. In today's fast-paced, stressful modern world, the Gita is more relevant than ever.</p>
+
+        <h3>1. Stress and Mental Health</h3>
+        <p>Modern life is full of anxiety, depression, and confusion. The Gita teaches <span class="key-term">Sthitaprajna</span> — a person of stable mind who is not shaken by sorrow or excited by happiness. This is exactly what today's mental health framework calls <span class="key-term">emotional resilience.</span></p>
+
+        <h3>2. Karma Yoga in Professional Life</h3>
+        <div class="highlight-box">"Do your work sincerely, do not worry about results."</div>
+        <p>This directly applies to students and professionals who are obsessed with outcomes and suffer when results don't meet expectations. The Gita teaches effort over obsession.</p>
+
+        <h3>3. Leadership and Decision Making</h3>
+        <p>Arjuna's dilemma is the dilemma of every leader — choosing between personal emotion and larger duty. Krishna's guidance teaches <span class="key-term">decisive, value-based leadership.</span> Many corporate training programs today use Gita principles.</p>
+
+        <h3>4. Concept of Swadharma</h3>
+        <p>Everyone has their own role and duty in society. The Gita says fulfilling your own duty (<span class="key-term">Swadharma</span>) honestly is better than imitating someone else's path — highly relevant in today's identity crisis among youth.</p>
+
+        <h3>5. Equality and Non-discrimination</h3>
+        <p>Krishna says the soul (<span class="key-term">Atma</span>) has no caste, religion, or gender. This teaches universal equality and brotherhood — values urgently needed in today's divided world.</p>
+
+        <h3>6. Environmental Awareness</h3>
+        <p>The Gita teaches balance with nature and warns against greed — relevant to today's climate crisis and overconsumption culture.</p>
+
+        <h3>Conclusion</h3>
+        <p>The Gita is not a book of the past. It is a <span class="key-term">manual for life.</span> Whether managing emotions, performing duties, or finding purpose — the Gita provides answers. Its relevance only grows with time.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card" id="q2">
+    <div class="q-header" onclick="toggle(this)">
+      <span class="q-num">Q2</span>
+      <span class="q-title">Describe the nature of Yoga in Bhagavad Gita + Discuss Trigunas.</span>
+      <span class="q-marks">10 + 5 = 15 marks</span>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-text">
+
+        <h3>Part A — Nature of Yoga (10 marks)</h3>
+        <p>The word <span class="key-term">Yoga</span> comes from Sanskrit root <span class="sanskrit">"Yuj"</span> meaning to unite. In the Gita, Yoga means <span class="key-term">union of the individual soul (Jivatma) with the Supreme Soul (Paramatma).</span></p>
+        <p>Krishna defines Yoga as:</p>
+
+        <div class="highlight-box">
+          <em>"Yogah Karmasu Kaushalam"</em> — Yoga is excellence in action<br><br>
+          <em>"Samatvam Yoga Uchyate"</em> — Yoga is equanimity of mind
+        </div>
+
+        <h3>Three Main Yogas</h3>
+        <ul>
+          <li><span class="key-term">Gyana Yoga (Path of Knowledge):</span> Attaining liberation through self-knowledge. Understanding the difference between body and soul, real and unreal, eternal and temporary.</li>
+          <li><span class="key-term">Karma Yoga (Path of Action):</span> Performing all actions as duty, without selfish desire or attachment to results. Offering all actions to God. Most practical yoga for ordinary people.</li>
+          <li><span class="key-term">Bhakti Yoga (Path of Devotion):</span> Surrendering completely to God with love and faith. Krishna calls this the highest and easiest path. Pure devotion melts all ego and leads to liberation.</li>
+        </ul>
+
+        <h3>Other Yogas Mentioned</h3>
+        <ul>
+          <li><span class="key-term">Dhyana Yoga</span> — meditation and control of mind</li>
+          <li><span class="key-term">Raja Yoga</span> — royal path combining all forms</li>
+        </ul>
+
+        <div class="highlight-box">
+          Key principle: Detachment from results + Dedication of action to God = Liberation (Moksha)
+        </div>
+
+        <h3>Part B — Trigunas (5 marks)</h3>
+        <p>According to Gita Chapter 14 (<span class="key-term">Gunatraya Vibhaga Yoga</span>), all of nature and human personality is made of three qualities called <span class="key-term">Trigunas:</span></p>
+
+        <table>
+          <tr><th>Guna</th><th>Nature</th><th>Effect on Person</th></tr>
+          <tr><td><span class="key-term">Tamas</span></td><td>Darkness, laziness, ignorance</td><td>Delusion, sleep, inaction</td></tr>
+          <tr><td><span class="key-term">Rajas</span></td><td>Passion, desire, activity</td><td>Attachment, restlessness, greed</td></tr>
+          <tr><td><span class="key-term">Sattva</span></td><td>Purity, clarity, goodness</td><td>Knowledge, peace, happiness</td></tr>
+        </table>
+
+        <p>Every person has all three gunas, but one dominates. The goal of spiritual life is to <span class="key-term">rise above all three gunas (Trigunatita)</span> and reach the pure state of the soul.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card" id="q3">
+    <div class="q-header" onclick="toggle(this)">
+      <span class="q-num">Q3</span>
+      <span class="q-title">Describe the tradition of Karmayoga + Nature of Yagya in Bhagavad Gita.</span>
+      <span class="q-marks">5 + 10 = 15 marks</span>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-text">
+
+        <h3>Part A — Tradition of Karmayoga (5 marks)</h3>
+        <p>Karma Yoga is the central teaching of the Gita. Krishna tells Arjuna in Chapter 3:</p>
+
+        <div class="highlight-box">
+          "You have the right to perform your duty, but not to the fruits of your actions." — <strong>Nishkama Karma</strong>
+        </div>
+
+        <h3>Key Principles of Karma Yoga</h3>
+        <ul>
+          <li>Do your duty as per your <span class="key-term">Swadharma</span> (own role/duty)</li>
+          <li>Do not be attached to success or failure</li>
+          <li>Dedicate all actions to God</li>
+          <li>Work itself becomes worship</li>
+          <li>Act for the welfare of all — <span class="key-term">Lokasangraha</span></li>
+        </ul>
+        <p>Krishna also says <span class="key-term">inaction is not an option</span> — even maintaining your body requires action. The wise person acts without ego.</p>
+
+        <h3>Part B — Nature of Yagya / Sacrifice (10 marks)</h3>
+        <p>In the Gita, <span class="key-term">Yagya</span> doesn't only mean fire ritual. Krishna expands its meaning to cover all selfless acts performed for a higher purpose.</p>
+
+        <h3>Types of Yagya</h3>
+        <table>
+          <tr><th>#</th><th>Type</th><th>Meaning</th></tr>
+          <tr><td>1</td><td><span class="key-term">Dravya Yagya</span></td><td>Sacrifice of material things / wealth</td></tr>
+          <tr><td>2</td><td><span class="key-term">Gyana Yagya</span></td><td>Sacrifice through knowledge and wisdom</td></tr>
+          <tr><td>3</td><td><span class="key-term">Dhyana Yagya</span></td><td>Sacrifice through meditation</td></tr>
+          <tr><td>4</td><td><span class="key-term">Tapas Yagya</span></td><td>Sacrifice through self-discipline / austerity</td></tr>
+          <tr><td>5</td><td><span class="key-term">Pranayama Yagya</span></td><td>Offering the breath / life force as sacrifice</td></tr>
+        </table>
+
+        <div class="highlight-box">
+          Core idea: Any action done selflessly for a higher purpose, without ego, is a Yagya. Life itself should be lived as a Yagya — a continuous offering.
+        </div>
+
+        <p>Krishna declares that <span class="key-term">Gyana Yagya is the highest</span> of all — because all material sacrifice ultimately leads to knowledge, and knowledge leads to liberation.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bonus: Sthitaprajna -->
+  <div class="part-divider">
+    <h2>Bonus — Q3(a) Sthitaprajna · 5 marks</h2>
+  </div>
+
+  <div class="q-card" id="q3a">
+    <div class="q-header" onclick="toggle(this)">
+      <span class="q-num">Q3a</span>
+      <span class="q-title">Describe in detail upon the topic Sthitaprajna.</span>
+      <span class="q-marks">5 marks</span>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-text">
+        <p><span class="key-term">Sthitaprajna</span> (स्थितप्रज्ञ) means <span class="key-term">"one of steady wisdom"</span> — a person whose mind is stable and unshaken in all circumstances. Described in Chapter 2 of the Gita.</p>
+
+        <h3>Qualities of a Sthitaprajna</h3>
+        <ul>
+          <li>Not troubled by sorrow, not excited by happiness</li>
+          <li>Free from attachment, fear, and anger</li>
+          <li>Without selfish desires — like a lamp in a windless place, steady and still</li>
+          <li>Withdraws senses from sense objects like a tortoise withdraws its limbs</li>
+          <li>Acts in the world but is not affected by it — <span class="key-term">neither elated by good nor depressed by bad</span></li>
+        </ul>
+
+        <div class="highlight-box">
+          A Sthitaprajna is the ideal human being according to the Gita — fully aware, fully active, yet completely at peace.
+        </div>
+
+        <p>This concept is the Gita's answer to the modern problem of emotional instability, anxiety, and reactivity.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  ॐ तत् सत् · AC-02 Message of Bhagavad Gita · B.Tech 6th Semester · All the best
+</footer>
+
+<script>
+  function toggle(header) {
+    const card = header.closest('.q-card');
+    card.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
