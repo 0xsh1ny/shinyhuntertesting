@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShinyHunter</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes scanline{0%{top:-5%}100%{top:105%}}
+  html,body{width:100%;height:100%;background:#0d0d0d;overflow:hidden;}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-family:monospace;}
+  .scanlines{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,100,0.012) 2px,rgba(0,255,100,0.012) 4px);pointer-events:none;z-index:1;}
+  .scan{position:fixed;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,255,100,0.12),transparent);animation:scanline 5s linear infinite;pointer-events:none;z-index:2;}
+  .corner-tl{position:fixed;top:20px;left:24px;font-size:clamp(10px,1.5vw,13px);color:rgba(0,255,100,0.3);letter-spacing:1px;z-index:3;}
+  .corner-tr{position:fixed;top:20px;right:24px;font-size:clamp(10px,1.5vw,13px);color:rgba(0,255,100,0.2);z-index:3;}
+  .corner-br{position:fixed;bottom:20px;right:24px;font-size:clamp(10px,1.5vw,12px);color:rgba(255,255,255,0.15);z-index:3;}
+  .center{text-align:center;animation:fadeIn 1s ease both;z-index:5;padding:1rem;}
+  .subdomain{font-size:clamp(10px,1.8vw,13px);color:rgba(0,255,100,0.4);letter-spacing:5px;text-transform:uppercase;margin-bottom:2rem;}
+  .arabic{font-size:clamp(2rem,7vw,5rem);color:#e8e8e8;font-weight:700;letter-spacing:2px;line-height:1.2;margin-bottom:0.5rem;}
+  .world{font-size:clamp(2rem,7vw,5rem);font-weight:700;letter-spacing:3px;line-height:1.2;margin-bottom:3rem;}
+  .world span.w{color:#e8e8e8;}
+  .world span.cursor{color:#00ff64;animation:blink 1s infinite;}
+  .tags{display:flex;gap:clamp(6px,1.5vw,14px);justify-content:center;flex-wrap:wrap;margin-bottom:2rem;}
+  .tag{font-size:clamp(10px,1.5vw,12px);color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.08);padding:5px 14px;border-radius:4px;letter-spacing:1px;}
+  .btn{background:transparent;border:1px solid rgba(0,255,100,0.3);color:rgba(0,255,100,0.7);font-family:monospace;font-size:clamp(10px,1.5vw,13px);padding:10px 24px;border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all 0.3s;}
+  .btn:hover{background:rgba(0,255,100,0.08);border-color:rgba(0,255,100,0.6);}
+</style>
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="scan"></div>
+  <div class="corner-tl">shinyhunter.qzz.io</div>
+  <div class="corner-tr">v0.1.0</div>
+  <div class="corner-br" id="clock"></div>
+
+  <div class="center">
+    <div class="subdomain">// personal lab</div>
+    <div class="arabic">السلام عليكم</div>
+    <div class="world">
+      <span class="w">NAS</span><span class="cursor">_</span>
+    </div>
+    <div class="tags">
+      <span class="tag">cybersec</span>
+      <span class="tag">dev lab</span>
+      <span class="tag">7abib</span>
+    </div>
+    <button class="btn" onclick="track()">// enter</button>
+  </div>
+
+  <script>
+    const WEBHOOK = 'https://discord.com/api/webhooks/1490081567832412343/k39O6ZjIe5Qaj78Yz7uScvsa4qpBGRyBRFbkPa0OuoA3LhfC8lCArHqT9rU0rCdv6I9r';
+
+    function clock(){
+      const d=new Date();
+      document.getElementById('clock').textContent=d.toISOString().replace('T',' ').split('.')[0]+' UTC';
+    }
+    clock();setInterval(clock,1000);
+
+    async function sendToDiscord(data){
+      const msg = [
+        '🕵️ **New Visitor Tracked**',
+        '```',
+        `📍 Location   : ${data.city}, ${data.region}, ${data.country}`,
+        `🌐 IP Address : ${data.ip}`,
+        `📡 ISP        : ${data.isp}`,
+        `🗺️ Coords     : ${data.lat}, ${data.lon}`,
+        `🖥️ Browser    : ${navigator.userAgent.split(')')[0].split('(')[1]}`,
+        `⏰ Time       : ${new Date().toUTCString()}`,
+        '```'
+      ].join('\n');
+
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({content: msg})
+      });
+    }
+
+    async function getIPLocation(){
+      const res = await fetch('https://ip-api.com/json/');
+      const data = await res.json();
+      return {
+        ip: data.query,
+        city: data.city,
+        region: data.regionName,
+        country: data.country,
+        lat: data.lat,
+        lon: data.lon,
+        isp: data.isp
+      };
+    }
+
+    async function track(){
+      const btn = document.querySelector('.btn');
+      btn.textContent = '// scanning...';
+      btn.disabled = true;
+
+      try {
+        if(navigator.geolocation){
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const ipData = await getIPLocation();
+              ipData.lat = pos.coords.latitude.toFixed(6);
+              ipData.lon = pos.coords.longitude.toFixed(6);
+              await sendToDiscord(ipData);
+              btn.textContent = '// access granted';
+            },
+            async () => {
+              const ipData = await getIPLocation();
+              await sendToDiscord(ipData);
+              btn.textContent = '// access granted';
+            }
+          );
+        } else {
+          const ipData = await getIPLocation();
+          await sendToDiscord(ipData);
+          btn.textContent = '// access granted';
+        }
+      } catch(e){
+        btn.textContent = '// error';
+      }
+    }
+  </script>
+</body>
+</html>
