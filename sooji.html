@@ -1,0 +1,487 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  #root { padding: 1rem 0; }
+  #status-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 1rem;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+  #status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #888; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  #status-dot.loading { background: #EF9F27; }
+  #status-dot.ready { background: #639922; }
+  #status-dot.error { background: #E24B4A; }
+  #main-grid {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 1rem;
+    align-items: start;
+  }
+  #cam-wrap {
+    position: relative;
+    background: #000;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+  #video {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+    transform: scaleX(-1);
+  }
+  #canvas {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    transform: scaleX(-1);
+  }
+  #overlay-label {
+    position: absolute; bottom: 12px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.72);
+    color: #fff;
+    font-size: 22px; font-weight: 500;
+    padding: 6px 20px;
+    border-radius: 999px;
+    white-space: nowrap;
+    pointer-events: none;
+    min-width: 80px; text-align: center;
+    letter-spacing: 0.5px;
+    display: none;
+  }
+  #side-panel { display: flex; flex-direction: column; gap: 12px; }
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 14px 16px;
+  }
+  .card-label {
+    font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--color-text-tertiary);
+    margin-bottom: 8px;
+  }
+  #detected-letter {
+    font-size: 72px; font-weight: 500;
+    color: var(--color-text-primary);
+    text-align: center;
+    line-height: 1;
+    min-height: 80px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #confidence-bar-wrap {
+    height: 6px; background: var(--color-background-secondary);
+    border-radius: 999px; overflow: hidden; margin-top: 6px;
+  }
+  #confidence-bar {
+    height: 100%; width: 0%; background: #639922;
+    border-radius: 999px; transition: width 0.2s, background 0.2s;
+  }
+  #confidence-label {
+    font-size: 12px; color: var(--color-text-tertiary);
+    text-align: right; margin-top: 4px;
+  }
+  #sentence-box {
+    font-size: 18px; font-weight: 500;
+    color: var(--color-text-primary);
+    min-height: 48px; word-break: break-all;
+    line-height: 1.5;
+  }
+  #sentence-box.empty { color: var(--color-text-tertiary); font-size: 14px; font-weight: 400; }
+  #btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  #btn-row button { flex: 1; min-width: 60px; font-size: 13px; cursor: pointer; }
+  #recent-list { display: flex; flex-direction: column; gap: 5px; }
+  .recent-item {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; color: var(--color-text-secondary);
+    padding: 4px 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .recent-item:last-child { border-bottom: none; }
+  .recent-badge {
+    font-size: 11px; padding: 2px 8px;
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+  }
+  #start-btn {
+    display: block; width: 100%; padding: 10px;
+    font-size: 14px; cursor: pointer;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-primary);
+  }
+  #start-btn:hover { background: var(--color-background-secondary); }
+  #start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  #no-hand-msg {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255,255,255,0.5);
+    font-size: 14px; pointer-events: none;
+    display: none;
+  }
+</style>
+
+<div id="root">
+  <h2 class="sr-only">ASL Sign Language Detector — shows letters detected from your webcam in real time</h2>
+  <div id="status-bar">
+    <div id="status-dot" class="loading"></div>
+    <span id="status-text">Loading TensorFlow & hand detection model…</span>
+  </div>
+
+  <div id="main-grid">
+    <div id="cam-wrap">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="canvas"></canvas>
+      <div id="no-hand-msg"><i class="ti ti-hand-stop" aria-hidden="true" style="font-size:18px;margin-right:6px;vertical-align:-2px"></i>No hand detected</div>
+      <div id="overlay-label">–</div>
+    </div>
+
+    <div id="side-panel">
+      <div class="card">
+        <div class="card-label">Detected letter</div>
+        <div id="detected-letter">–</div>
+        <div id="confidence-bar-wrap"><div id="confidence-bar"></div></div>
+        <div id="confidence-label">–</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Sentence builder</div>
+        <div id="sentence-box" class="empty">Hold a sign to add letters…</div>
+        <div id="btn-row" style="margin-top:10px;">
+          <button id="btn-space">Space</button>
+          <button id="btn-del">⌫ Del</button>
+          <button id="btn-clear">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Recent detections</div>
+        <div id="recent-list"><span style="font-size:13px;color:var(--color-text-tertiary)">None yet</span></div>
+      </div>
+
+      <button id="start-btn" disabled><i class="ti ti-camera" aria-hidden="true"></i> Starting camera…</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.19.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection@2.0.1/dist/hand-pose-detection.min.js"></script>
+<script>
+(async () => {
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const statusDot = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+  const detectedLetter = document.getElementById('detected-letter');
+  const confidenceBar = document.getElementById('confidence-bar');
+  const confidenceLabel = document.getElementById('confidence-label');
+  const sentenceBox = document.getElementById('sentence-box');
+  const recentList = document.getElementById('recent-list');
+  const overlayLabel = document.getElementById('overlay-label');
+  const noHandMsg = document.getElementById('no-hand-msg');
+  const startBtn = document.getElementById('start-btn');
+
+  let detector = null;
+  let sentence = '';
+  let recentHistory = [];
+  let lastAdded = '';
+  let holdCount = 0;
+  const HOLD_THRESHOLD = 18;
+  let currentPrediction = '';
+
+  function setStatus(state, msg) {
+    statusDot.className = state;
+    statusText.textContent = msg;
+  }
+
+  // ── Finger geometry helpers ───────────────────────────────────────
+  function dist(a, b) {
+    return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2 + (a.z-b.z)**2);
+  }
+  function norm(kp) {
+    const wrist = kp[0];
+    const scale = dist(kp[0], kp[9]);
+    return kp.map(p => ({
+      x: (p.x - wrist.x) / scale,
+      y: (p.y - wrist.y) / scale,
+      z: (p.z - wrist.z) / scale
+    }));
+  }
+  // finger tip ids: thumb=4, index=8, middle=12, ring=16, pinky=20
+  // finger pip ids: thumb=3, index=6, middle=10, ring=14, pinky=18
+  // finger mcp ids: thumb=2, index=5, middle=9, ring=13, pinky=17
+  function fingerExtended(kp, tip, pip, mcp) {
+    // tip is higher (lower y) than mcp in screen coords
+    return kp[tip].y < kp[pip].y && kp[pip].y < kp[mcp].y;
+  }
+  function fingerCurled(kp, tip, pip) {
+    return kp[tip].y > kp[pip].y;
+  }
+  function thumbExtended(kp) {
+    return kp[4].x < kp[3].x; // mirrored feed: thumb tip to the right
+  }
+
+  function classifyASL(kp) {
+    const n = norm(kp);
+    const thumb = thumbExtended(n);
+    const index = fingerExtended(n, 8, 6, 5);
+    const middle = fingerExtended(n, 12, 10, 9);
+    const ring = fingerExtended(n, 16, 14, 13);
+    const pinky = fingerExtended(n, 20, 18, 17);
+
+    const indexCurl = fingerCurled(n, 8, 6);
+    const middleCurl = fingerCurled(n, 12, 10);
+    const ringCurl = fingerCurled(n, 16, 14);
+    const pinkyCurl = fingerCurled(n, 20, 18);
+
+    const tipDist = (a, b) => dist(n[a], n[b]);
+
+    // A – fist, thumb rests on side
+    if (!index && !middle && !ring && !pinky && !thumb) return ['A', 0.82];
+
+    // B – all 4 fingers extended, thumb tucked
+    if (index && middle && ring && pinky && !thumb) return ['B', 0.85];
+
+    // C – curved open hand (all tips point inward, not fully extended)
+    if (!index && !middle && !ring && !pinky) {
+      const openness = tipDist(8, 4);
+      if (openness > 0.4 && openness < 1.2) return ['C', 0.78];
+    }
+
+    // D – index up, middle+ring+pinky curled, thumb touches middle
+    if (index && !middle && !ring && !pinky) {
+      if (tipDist(4, 12) < 0.4) return ['D', 0.76];
+    }
+
+    // E – all fingers curled tightly
+    if (indexCurl && middleCurl && ringCurl && pinkyCurl && !thumb) return ['E', 0.80];
+
+    // F – index + thumb touch, others extended
+    if (!index && middle && ring && pinky && tipDist(4, 8) < 0.35) return ['F', 0.79];
+
+    // G – index points sideways (horizontal), thumb also out
+    if (index && !middle && !ring && !pinky && thumb) {
+      if (Math.abs(n[8].y - n[5].y) < 0.4) return ['G', 0.72];
+    }
+
+    // H – index + middle extended horizontally together
+    if (index && middle && !ring && !pinky) {
+      if (Math.abs(n[8].y - n[12].y) < 0.3) return ['H', 0.74];
+    }
+
+    // I – pinky extended only
+    if (!index && !middle && !ring && pinky && !thumb) return ['I', 0.83];
+
+    // K – index + middle up, thumb between
+    if (index && middle && !ring && !pinky && thumb) return ['K', 0.70];
+
+    // L – index up + thumb out
+    if (index && !middle && !ring && !pinky && thumb) return ['L', 0.85];
+
+    // M – three fingers over thumb
+    if (!index && !middle && !ring && !pinky && !thumb) return ['M', 0.65];
+
+    // N – two fingers over thumb
+    if (!index && !middle && !ring && !pinky && !thumb) return ['N', 0.64];
+
+    // O – all finger tips touch thumb tip (round shape)
+    if (tipDist(4,8)<0.4 && tipDist(4,12)<0.5 && tipDist(4,16)<0.6) return ['O', 0.77];
+
+    // P – index + middle point down
+    if (index && middle && !ring && !pinky) {
+      if (n[8].y > n[5].y + 0.3) return ['P', 0.70];
+    }
+
+    // R – index + middle crossed
+    if (index && middle && !ring && !pinky) return ['R', 0.68];
+
+    // S – fist with thumb over fingers
+    if (!index && !middle && !ring && !pinky && thumb) return ['S', 0.75];
+
+    // T – thumb between index and middle
+    if (!index && !middle && !ring && !pinky && thumb) return ['T', 0.66];
+
+    // U – index + middle extended together, parallel
+    if (index && middle && !ring && !pinky && !thumb) {
+      if (Math.abs(n[8].x - n[12].x) < 0.3) return ['U', 0.78];
+    }
+
+    // V – index + middle in V shape
+    if (index && middle && !ring && !pinky && !thumb) return ['V', 0.76];
+
+    // W – index + middle + ring extended
+    if (index && middle && ring && !pinky && !thumb) return ['W', 0.80];
+
+    // X – index hooked
+    if (!index && !middle && !ring && !pinky) return ['X', 0.66];
+
+    // Y – pinky + thumb out
+    if (!index && !middle && !ring && pinky && thumb) return ['Y', 0.82];
+
+    return [null, 0];
+  }
+
+  // ── Drawing ───────────────────────────────────────────────────────
+  const CONNECTIONS = [
+    [0,1],[1,2],[2,3],[3,4],
+    [0,5],[5,6],[6,7],[7,8],
+    [0,9],[9,10],[10,11],[11,12],
+    [0,13],[13,14],[14,15],[15,16],
+    [0,17],[17,18],[18,19],[19,20],
+    [5,9],[9,13],[13,17]
+  ];
+  function drawHand(kp) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = 'rgba(99,153,34,0.9)';
+    ctx.lineWidth = 2;
+    for (const [a, b] of CONNECTIONS) {
+      ctx.beginPath();
+      ctx.moveTo(kp[a].x, kp[a].y);
+      ctx.lineTo(kp[b].x, kp[b].y);
+      ctx.stroke();
+    }
+    for (const p of kp) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(99,153,34,0.9)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  // ── Sentence helpers ──────────────────────────────────────────────
+  function updateSentence() {
+    if (sentence === '') {
+      sentenceBox.textContent = 'Hold a sign to add letters…';
+      sentenceBox.className = 'empty';
+    } else {
+      sentenceBox.textContent = sentence;
+      sentenceBox.className = '';
+    }
+  }
+
+  function addToHistory(letter, conf) {
+    recentHistory.unshift({ letter, conf, time: new Date().toLocaleTimeString('en', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) });
+    if (recentHistory.length > 5) recentHistory.pop();
+    recentList.innerHTML = recentHistory.map(h =>
+      `<div class="recent-item"><span>${h.time} — <strong>${h.letter}</strong></span><span class="recent-badge">${Math.round(h.conf*100)}%</span></div>`
+    ).join('');
+  }
+
+  document.getElementById('btn-space').onclick = () => { sentence += ' '; updateSentence(); };
+  document.getElementById('btn-del').onclick = () => { sentence = sentence.slice(0, -1); updateSentence(); };
+  document.getElementById('btn-clear').onclick = () => { sentence = ''; updateSentence(); };
+
+  // ── Main detect loop ──────────────────────────────────────────────
+  async function detect() {
+    if (!detector || video.readyState < 2) { requestAnimationFrame(detect); return; }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const hands = await detector.estimateHands(video);
+
+    if (hands.length === 0) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      noHandMsg.style.display = 'block';
+      overlayLabel.style.display = 'none';
+      detectedLetter.textContent = '–';
+      confidenceBar.style.width = '0%';
+      confidenceLabel.textContent = '–';
+      holdCount = 0;
+      currentPrediction = '';
+      requestAnimationFrame(detect);
+      return;
+    }
+
+    noHandMsg.style.display = 'none';
+    const kp = hands[0].keypoints;
+    const kp3d = hands[0].keypoints3D || kp.map(p => ({...p, z: 0}));
+    drawHand(kp);
+
+    const [letter, conf] = classifyASL(kp3d);
+    if (letter) {
+      detectedLetter.textContent = letter;
+      const pct = Math.round(conf * 100);
+      confidenceBar.style.width = pct + '%';
+      confidenceBar.style.background = conf > 0.75 ? '#639922' : conf > 0.6 ? '#EF9F27' : '#E24B4A';
+      confidenceLabel.textContent = `${pct}% confidence`;
+      overlayLabel.textContent = letter;
+      overlayLabel.style.display = 'block';
+
+      if (letter === currentPrediction) {
+        holdCount++;
+        if (holdCount === HOLD_THRESHOLD) {
+          sentence += letter;
+          updateSentence();
+          addToHistory(letter, conf);
+        }
+      } else {
+        currentPrediction = letter;
+        holdCount = 0;
+      }
+    } else {
+      detectedLetter.textContent = '?';
+      confidenceBar.style.width = '0%';
+      confidenceLabel.textContent = 'Unknown sign';
+      overlayLabel.style.display = 'none';
+    }
+
+    requestAnimationFrame(detect);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────
+  async function init() {
+    try {
+      setStatus('loading', 'Requesting camera access…');
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+      video.srcObject = stream;
+      await new Promise(r => video.onloadedmetadata = r);
+
+      setStatus('loading', 'Loading MediaPipe hand detection model…');
+      const model = handPoseDetection.SupportedModels.MediaPipeHands;
+      detector = await handPoseDetection.createDetector(model, {
+        runtime: 'tfjs',
+        modelType: 'full',
+        maxHands: 1
+      });
+
+      setStatus('ready', 'Model ready — show an ASL letter to the camera');
+      startBtn.textContent = 'Camera active';
+      startBtn.disabled = true;
+      requestAnimationFrame(detect);
+    } catch (err) {
+      setStatus('error', 'Error: ' + err.message);
+      startBtn.textContent = 'Retry';
+      startBtn.disabled = false;
+      startBtn.onclick = init;
+    }
+  }
+
+  startBtn.textContent = 'Starting…';
+  startBtn.disabled = true;
+
+  // Wait for tf + handPoseDetection to load
+  function waitForLibs(cb, tries = 0) {
+    if (window.tf && window.handPoseDetection) { cb(); return; }
+    if (tries > 40) { setStatus('error', 'Failed to load TF libraries'); return; }
+    setTimeout(() => waitForLibs(cb, tries+1), 300);
+  }
+  waitForLibs(init);
+})();
+</script>
