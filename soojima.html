@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>ASL Alphabet Live Detector by SUJUMA RANI BRAHMA</title>
+<style>
+  :root{
+    --bg: #0b0e0c;
+    --panel: #121613;
+    --line: #232a26;
+    --text: #eef2ee;
+    --muted: #8a9690;
+    --accent: #5ee6a8;
+    --accent-dim: #2e6b51;
+    --warn: #e6b85e;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--bg); color:var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 18px 16px 40px;
+  }
+  header{
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  h1{
+    font-size: 19px; letter-spacing: 0.02em; font-weight: 600; margin:0;
+  }
+  h1 span{ color: var(--accent); }
+  .status{
+    font-size: 12px; color: var(--muted);
+  }
+
+  .stage{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  video, canvas{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    object-fit: cover;
+  }
+  video{ transform: scaleX(-1); }
+  #overlay{ transform: scaleX(-1); }
+
+  .letter-badge{
+    position:absolute;
+    top: 10px; left: 10px;
+    background: rgba(10,14,12,0.72);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 14px;
+    backdrop-filter: blur(4px);
+    z-index: 5;
+  }
+  .letter-badge .big{
+    font-size: 40px; font-weight: 700; color: var(--accent); line-height: 1;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .letter-badge .small{
+    font-size: 11px; color: var(--muted); margin-top: 2px;
+  }
+
+  .controls-row{
+    display:flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;
+  }
+  button{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 9px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  button:hover{ border-color: var(--accent-dim); }
+  button:active{ transform: translateY(1px); }
+  button.primary{ border-color: var(--accent-dim); color: var(--accent); }
+  button:disabled{ opacity: 0.4; cursor: default; }
+
+  .panel{
+    margin-top: 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .panel h2{
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); margin: 0 0 10px;
+  }
+  #word{
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 28px;
+    min-height: 40px;
+    word-break: break-all;
+    letter-spacing: 0.02em;
+  }
+  #word .cursor{
+    display:inline-block; width: 2px; height: 24px; background: var(--accent);
+    margin-left: 2px; vertical-align: -4px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .hold-bar{
+    height: 4px; background: var(--line); border-radius: 4px; margin-top: 14px; overflow: hidden;
+  }
+  .hold-bar > div{
+    height: 100%; background: var(--accent); width: 0%;
+    transition: width 0.05s linear;
+  }
+
+  details{
+    margin-top: 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  summary{
+    cursor: pointer; font-size: 13px; color: var(--muted);
+  }
+  .legend{
+    margin-top: 12px; font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+  .legend b{ color: var(--text); }
+  .tier{
+    display:inline-block; padding: 2px 8px; border-radius: 5px; font-family: monospace; font-size: 12px; margin: 2px;
+  }
+  .tier.good{ background: rgba(94,230,168,0.12); color: var(--accent); }
+  .tier.fair{ background: rgba(230,184,94,0.12); color: var(--warn); }
+
+  .permission{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding: 24px; font-size: 14px; color: var(--muted); z-index: 10; background: var(--bg);
+  }
+
+  footer{ margin-top: 18px; font-size: 12px; color: var(--muted); text-align:center; }
+
+  @media (max-width: 560px){
+    .letter-badge .big{ font-size: 30px; }
+    #word{ font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>ASL <span>Alphabet</span> Live Detector by SUJUMA RANI BRAHMA</h1>
+    <div class="status" id="statusText">loading model…</div>
+  </header>
+
+  <div class="stage" id="stage">
+    <video id="video" playsinline autoplay muted></video>
+    <canvas id="overlay"></canvas>
+    <div class="letter-badge">
+      <div class="big" id="bigLetter">–</div>
+      <div class="small" id="confText">no hand detected</div>
+    </div>
+    <div class="permission" id="permissionMsg">
+      Tap "Start camera" below to begin. You'll be asked for camera access.
+    </div>
+  </div>
+
+  <div class="hold-bar"><div id="holdFill"></div></div>
+
+  <div class="controls-row">
+    <button class="primary" id="startBtn">Start camera</button>
+    <button id="flipBtn">Flip camera</button>
+    <button id="landmarksBtn">Hide skeleton</button>
+  </div>
+
+  <div class="panel">
+    <h2>Spelled text</h2>
+    <div id="word"><span class="cursor"></span></div>
+    <div class="controls-row">
+      <button id="spaceBtn">Space</button>
+      <button id="backspaceBtn">⌫ Backspace</button>
+      <button id="clearBtn">Clear</button>
+      <button id="speakBtn">🔊 Speak</button>
+    </div>
+  </div>
+
+  <details>
+    <summary>How recognition works &amp; accuracy notes</summary>
+    <div class="legend">
+      This runs entirely in your browser. Hand tracking uses Google's pretrained
+      <b>MediaPipe Hands</b> model (21 landmarks per hand). Letters are then identified by a
+      geometric rule-based classifier — not a trained letter-classification network — so accuracy
+      varies by letter shape:
+      <br><br>
+      <span class="tier good">reliable</span> B · C · D · F · G · H · I · K · L · O · U · V · W · Y
+      <br>
+      <span class="tier fair">trickier</span> A · E · M · N · S · T (closed-fist shapes — differ only by subtle thumb position)
+      <br><br>
+      <b>J and Z are not included</b> — they require motion, which this frame-by-frame
+      classifier can't capture. Hold a shape steady for about a second to lock in a letter.
+      Good, even lighting and keeping your hand 30–60cm from the camera helps a lot.
+    </div>
+  </details>
+
+  <footer>Runs fully on-device · no video leaves your browser</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  const video = document.getElementById('video');
+  const overlay = document.getElementById('overlay');
+  const ctx = overlay.getContext('2d');
+  const bigLetter = document.getElementById('bigLetter');
+  const confText = document.getElementById('confText');
+  const statusText = document.getElementById('statusText');
+  const startBtn = document.getElementById('startBtn');
+  const flipBtn = document.getElementById('flipBtn');
+  const landmarksBtn = document.getElementById('landmarksBtn');
+  const permissionMsg = document.getElementById('permissionMsg');
+  const wordEl = document.getElementById('word');
+  const holdFill = document.getElementById('holdFill');
+  const spaceBtn = document.getElementById('spaceBtn');
+  const backspaceBtn = document.getElementById('backspaceBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const speakBtn = document.getElementById('speakBtn');
+
+  let facingMode = 'user';
+  let camera = null;
+  let showLandmarks = true;
+  let currentWord = '';
+  let lastStableLetter = null;
+  let stableSince = 0;
+  let lastAddedLetter = null;
+  let lastAddedTime = 0;
+  const HOLD_MS = 850;
+  const RELOCK_GAP_MS = 500;
+
+  function renderWord(){
+    wordEl.innerHTML = (currentWord ? escapeHtml(currentWord) : '') + '<span class="cursor"></span>';
+  }
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  renderWord();
+
+  spaceBtn.addEventListener('click', () => { currentWord += ' '; renderWord(); });
+  backspaceBtn.addEventListener('click', () => { currentWord = currentWord.slice(0,-1); renderWord(); });
+  clearBtn.addEventListener('click', () => { currentWord = ''; renderWord(); });
+  speakBtn.addEventListener('click', () => {
+    if (!currentWord.trim()) return;
+    const u = new SpeechSynthesisUtterance(currentWord);
+    speechSynthesis.speak(u);
+  });
+  landmarksBtn.addEventListener('click', () => {
+    showLandmarks = !showLandmarks;
+    landmarksBtn.textContent = showLandmarks ? 'Hide skeleton' : 'Show skeleton';
+  });
+
+  // ---------- geometry helpers ----------
+  function dist(a, b){
+    const dz = (a.z||0) - (b.z||0);
+    return Math.hypot(a.x-b.x, a.y-b.y, dz);
+  }
+
+  function classify(lm){
+    const wrist = lm[0];
+    const scale = dist(lm[0], lm[9]) || 0.0001;
+
+    function curlRatio(tipIdx, mcpIdx){
+      return dist(lm[tipIdx], wrist) / dist(lm[mcpIdx], wrist);
+    }
+    const rIndex  = curlRatio(8, 5);
+    const rMiddle = curlRatio(12, 9);
+    const rRing   = curlRatio(16, 13);
+    const rPinky  = curlRatio(20, 17);
+
+    const EXT = 1.18, CURL = 0.92;
+    const state = r => r > EXT ? 'E' : (r < CURL ? 'K' : 'C');
+    const sIndex = state(rIndex), sMiddle = state(rMiddle), sRing = state(rRing), sPinky = state(rPinky);
+
+    const thumbTip = lm[4];
+    const thumbSpread = dist(thumbTip, lm[17]) / scale;   // away from palm
+    const thumbToIndexTip = dist(thumbTip, lm[8]) / scale; // pinch / circle
+    const thumbToIndexPip = dist(thumbTip, lm[6]) / scale; // poking between knuckles
+    const thumbOut = thumbSpread > 0.95;
+
+    const indexMiddleGap = dist(lm[8], lm[12]) / scale;
+    const allCurled = sIndex === 'K' && sMiddle === 'K' && sRing === 'K' && sPinky === 'K';
+    const allCurved = (sIndex === 'C' || sIndex === 'K') && (sMiddle === 'C' || sMiddle === 'K') &&
+                       (sRing === 'C' || sRing === 'K') && (sPinky === 'C' || sPinky === 'K') &&
+                       !(sIndex === 'K' && sMiddle === 'K' && sRing === 'K' && sPinky === 'K');
+
+    const pattern = sIndex + sMiddle + sRing + sPinky;
+
+    // --- distinct open-hand shapes first ---
+    if (pattern === 'EEEE') {
+      return thumbOut ? 'B' : 'B'; // thumb position doesn't change B much
+    }
+    if (pattern === 'EEEK') return 'W'.length && (thumbOut ? 'W' : 'W'); // index,middle,ring ext, pinky curl
+    if (sIndex === 'E' && sMiddle === 'E' && sRing === 'K' && sPinky === 'K') {
+      // could be U, V, H, K, R depending on spread + thumb
+      if (indexMiddleGap > 0.45) {
+        return thumbOut ? 'K' : 'V';
+      }
+      return thumbOut ? 'H' : 'U';
+    }
+    if (sIndex === 'E' && sMiddle === 'K' && sRing === 'K' && sPinky === 'K') {
+      if (thumbToIndexPip < 0.4) return 'D';
+      return thumbOut ? 'L' : 'G';
+    }
+    if (sIndex === 'K' && sMiddle === 'K' && sRing === 'K' && sPinky === 'E') {
+      return thumbOut ? 'Y' : 'I';
+    }
+    if (sIndex === 'K' && sMiddle === 'E' && sRing === 'E' && sPinky === 'E') {
+      if (thumbToIndexTip < 0.35) return 'F';
+    }
+    if (sIndex === 'C' && sMiddle === 'C' && (sRing === 'K' || sRing === 'C') && sPinky === 'K' && thumbToIndexTip < 0.35) {
+      return 'O';
+    }
+    if (allCurved) {
+      return 'C';
+    }
+
+    // --- closed-fist cluster: A / E / M / N / S / T ---
+    if (allCurled) {
+      const thumbLateral = Math.abs(thumbTip.x - lm[5].x) / scale; // side offset
+      if (thumbToIndexPip < 0.32) return 'T';
+      if (thumbSpread > 1.05 && thumbLateral > 0.35) return 'A';
+      if (thumbSpread < 0.7) return 'S';
+      if (dist(thumbTip, lm[14])/scale < 0.4) return 'N';
+      if (dist(thumbTip, lm[10])/scale < 0.45 && dist(thumbTip, lm[14])/scale < 0.55) return 'M';
+      return 'E';
+    }
+
+    return null;
+  }
+
+  // ---------- prediction smoothing ----------
+  function handleDetection(letter){
+    const now = performance.now();
+
+    if (letter === null) {
+      lastStableLetter = null;
+      stableSince = 0;
+      holdFill.style.width = '0%';
+      bigLetter.textContent = '–';
+      confText.textContent = 'no hand detected';
+      return;
+    }
+
+    bigLetter.textContent = letter;
+    confText.textContent = 'tracking…';
+
+    if (letter !== lastStableLetter) {
+      lastStableLetter = letter;
+      stableSince = now;
+    }
+
+    const heldFor = now - stableSince;
+    const pct = Math.min(100, (heldFor / HOLD_MS) * 100);
+    holdFill.style.width = pct + '%';
+
+    if (heldFor >= HOLD_MS) {
+      const sinceLastAdd = now - lastAddedTime;
+      if (!(letter === lastAddedLetter && sinceLastAdd < RELOCK_GAP_MS + HOLD_MS)) {
+        currentWord += letter;
+        renderWord();
+        lastAddedLetter = letter;
+        lastAddedTime = now;
+        confText.textContent = 'added "' + letter + '"';
+        stableSince = now + RELOCK_GAP_MS; // brief cooldown before re-arming
+      } else {
+        confText.textContent = 'held — change shape to add again';
+      }
+    } else {
+      confText.textContent = 'hold steady…';
+    }
+  }
+
+  // ---------- mediapipe setup ----------
+  const HAND_CONNECTIONS = window.HAND_CONNECTIONS;
+
+  const hands = new Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+  });
+  hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.6,
+    minTrackingConfidence: 0.6
+  });
+
+  function resizeCanvas(){
+    overlay.width = video.videoWidth || overlay.clientWidth;
+    overlay.height = video.videoHeight || overlay.clientHeight;
+  }
+
+  hands.onResults((results) => {
+    if (overlay.width !== video.videoWidth && video.videoWidth) resizeCanvas();
+    ctx.save();
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+      const lm = results.multiHandLandmarks[0];
+
+      if (showLandmarks && window.drawConnectors) {
+        drawConnectors(ctx, lm, HAND_CONNECTIONS, { color: '#5ee6a8', lineWidth: 2 });
+        drawLandmarks(ctx, lm, { color: '#eef2ee', lineWidth: 1, radius: 2.5 });
+      }
+
+      const letter = classify(lm);
+      handleDetection(letter);
+    } else {
+      handleDetection(null);
+    }
+    ctx.restore();
+  });
+
+  // ---------- camera lifecycle ----------
+  async function startCamera(){
+    statusText.textContent = 'requesting camera…';
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: false
+      });
+      video.srcObject = stream;
+      await video.play();
+      resizeCanvas();
+      permissionMsg.style.display = 'none';
+      statusText.textContent = 'model ready';
+      startBtn.textContent = 'Restart camera';
+
+      if (camera) camera.stop();
+      camera = new Camera(video, {
+        onFrame: async () => { await hands.send({ image: video }); },
+        width: 640,
+        height: 480
+      });
+      camera.start();
+    } catch (err) {
+      statusText.textContent = 'camera error';
+      permissionMsg.style.display = 'flex';
+      permissionMsg.textContent = 'Camera access failed: ' + err.message + '. Check permissions and reload.';
+    }
+  }
+
+  startBtn.addEventListener('click', startCamera);
+  flipBtn.addEventListener('click', () => {
+    facingMode = facingMode === 'user' ? 'environment' : 'user';
+    video.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+    overlay.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+    startCamera();
+  });
+
+  window.addEventListener('resize', resizeCanvas);
+})();
+</script>
+</body>
+</html>
