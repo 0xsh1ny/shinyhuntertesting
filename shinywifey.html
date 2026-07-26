@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shinyprince 🌻</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FFFBF0;
+    --cream-deep: #FFF3D6;
+    --sun: #F5B700;
+    --sun-deep: #C98A00;
+    --brown: #3D2B1F;
+    --brown-soft: #6B5642;
+    --rose: #D96C5F;
+    --leaf: #6B8E4E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--brown);
+    font-family:'Manrope', sans-serif;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Fraunces', serif;}
+  .script{font-family:'Caveat', cursive;}
+  a{color:inherit;}
+
+  ::selection{background:var(--sun); color:var(--brown);}
+
+  /* ---------- scroll reveal ---------- */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .9s ease, transform .9s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:32px 20px;
+    background:radial-gradient(ellipse at 50% 20%, var(--cream-deep) 0%, var(--cream) 60%);
+    overflow:hidden;
+  }
+  .sun-bloom{
+    width:min(46vw, 260px); height:min(46vw,260px);
+    position:relative;
+    margin-bottom:18px;
+    animation:pop-in 1.4s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  @keyframes pop-in{
+    0%{transform:scale(0) rotate(-30deg); opacity:0;}
+    100%{transform:scale(1) rotate(0deg); opacity:1;}
+  }
+  .petal{
+    position:absolute; left:50%; top:50%;
+    width:22%; height:44%;
+    background:linear-gradient(180deg, var(--sun), var(--sun-deep));
+    border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+    transform-origin:50% 100%;
+  }
+  .center-disc{
+    position:absolute; left:50%; top:50%; width:36%; height:36%;
+    background:radial-gradient(circle at 35% 30%, #6B4A2E, var(--brown));
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow: inset 0 0 0 6px rgba(255,255,255,.05);
+  }
+  .eyebrow{
+    letter-spacing:.14em; text-transform:uppercase; font-size:.72rem;
+    color:var(--brown-soft); font-weight:600; margin-bottom:10px;
+  }
+  .hero h1{
+    font-size:clamp(2.2rem, 7vw, 4.4rem);
+    font-weight:600; line-height:1.05; margin-bottom:14px;
+  }
+  .hero .sub{
+    font-family:'Caveat', cursive; font-size:clamp(1.6rem,4vw,2.4rem);
+    color:var(--rose); font-weight:600;
+  }
+  .scroll-cue{
+    margin-top:46px; font-size:.85rem; color:var(--brown-soft);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .scroll-cue .arrow{
+    width:9px; height:9px; border-right:2px solid var(--sun-deep); border-bottom:2px solid var(--sun-deep);
+    transform:rotate(45deg);
+    animation:bob 1.6s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(45deg);}50%{transform:translateY(6px) rotate(45deg);}}
+
+  /* ---------- SECTION shared ---------- */
+  section{
+    padding:100px 20px;
+    max-width:760px; margin:0 auto;
+  }
+  .section-label{
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--sun-deep); font-weight:700; margin-bottom:14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-label::after{content:''; flex:1; height:1px; background:rgba(61,43,31,.15);}
+  h2.title{
+    font-family:'Fraunces', serif; font-weight:600;
+    font-size:clamp(1.8rem, 4.4vw, 2.6rem);
+    margin-bottom:22px; line-height:1.15;
+  }
+  p.body-text{
+    font-size:1.08rem; line-height:1.85; color:var(--brown-soft); max-width:62ch;
+  }
+
+  /* ---------- OPENING NOTE ---------- */
+  .opening{text-align:center; padding-top:60px;}
+  .opening p.body-text{margin:0 auto 14px auto;}
+  .shayari{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:1.25rem; line-height:1.75; color:var(--brown);
+    margin-top:26px; white-space:pre-line;
+  }
+  .shayari::before, .shayari::after{content:'🌻'; font-size:1rem; display:block; opacity:.6; margin:8px 0;}
+
+  /* ---------- TIMELINE / TRAIN ---------- */
+  .journey{max-width:640px;}
+  .track{
+    position:relative;
+    margin-top:50px;
+    padding-left:36px;
+    border-left:3px dashed var(--sun-deep);
+  }
+  .stop{
+    position:relative;
+    margin-bottom:56px;
+    padding-left:6px;
+  }
+  .stop:last-child{margin-bottom:0;}
+  .stop-marker{
+    position:absolute; left:-47px; top:0;
+    width:32px; height:32px; border-radius:50%;
+    background:var(--cream); border:3px solid var(--sun-deep);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem; cursor:pointer;
+    transition:transform .3s ease, background .3s ease;
+  }
+  .stop-marker.open{background:var(--sun); transform:scale(1.12);}
+  .stop-date{
+    font-family:'Caveat', cursive; font-size:1.3rem; color:var(--rose); font-weight:600;
+  }
+  .stop-title{
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.3rem; margin:2px 0 10px 0;
+    cursor:pointer; user-select:none;
+  }
+  .stop-hint{font-size:.82rem; color:var(--brown-soft); opacity:.7; margin-bottom:8px;}
+  .stop-body{
+    max-height:0; overflow:hidden;
+    transition:max-height .6s ease, opacity .5s ease, margin .5s ease;
+    opacity:0;
+  }
+  .stop-body.open{max-height:600px; opacity:1; margin-top:6px;}
+  .stop-body p.body-text{margin-bottom:12px;}
+  .stop-body .shayari{font-size:1.1rem;}
+
+  /* ---------- FINAL WISH ---------- */
+  .finale{
+    text-align:center;
+    padding:110px 20px 60px 20px;
+    background:linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+  }
+  .finale h2{font-size:clamp(1.6rem,4.4vw,2.3rem); margin-bottom:18px;}
+  .reveal-btn{
+    margin-top:20px;
+    background:var(--sun); color:var(--brown);
+    border:none; padding:16px 34px; border-radius:100px;
+    font-family:'Manrope', sans-serif; font-weight:700; font-size:1rem;
+    cursor:pointer; box-shadow:0 8px 24px rgba(201,138,0,.35);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .reveal-btn:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(201,138,0,.45);}
+  .reveal-btn:focus-visible{outline:3px solid var(--rose); outline-offset:3px;}
+
+  /* ---------- FULL SCREEN VIDEO SECTION ---------- */
+  .full-video-section {
+    width: 100%;
+    background: #000;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+  }
+  .full-video-section video {
+    width: 100%;
+    height: auto;
+    max-height: 100vh;
+    object-fit: cover;
+    display: block;
+    border: none;
+    outline: none;
+  }
+
+  .wish-overlay{
+    position:fixed; inset:0; background:rgba(61,43,31,.55);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .5s ease;
+    z-index:50; padding:24px;
+  }
+  .wish-overlay.show{opacity:1; pointer-events:auto;}
+  .wish-card{
+    background:var(--cream); max-width:560px; width:100%;
+    max-height:82vh; overflow-y:auto;
+    border-radius:24px; padding:44px 34px;
+    position:relative;
+    transform:scale(.92) translateY(20px); transition:transform .5s cubic-bezier(.2,1,.3,1);
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+  }
+  .wish-overlay.show .wish-card{transform:scale(1) translateY(0);}
+  .wish-close{
+    position:absolute; top:16px; right:18px; background:none; border:none;
+    font-size:1.4rem; color:var(--brown-soft); cursor:pointer; line-height:1;
+  }
+  .wish-card h3{font-family:'Fraunces', serif; font-size:1.5rem; margin-bottom:16px; text-align:center;}
+  .wish-card p{font-size:1.02rem; line-height:1.8; color:var(--brown-soft); margin-bottom:14px; text-align:left;}
+  .wish-card .shayari{text-align:center;}
+  .wish-sign{
+    font-family:'Caveat', cursive; font-size:1.8rem; color:var(--rose); text-align:right; margin-top:22px;
+  }
+
+  footer{
+    text-align:center; padding:50px 20px 70px 20px;
+    color:var(--brown-soft); font-size:.85rem;
+    background: var(--cream);
+  }
+
+  .petal-fall{
+    position:fixed; top:-30px; font-size:1.1rem; pointer-events:none; z-index:60;
+    animation-name:fall; animation-timing-function:linear; animation-fill-mode:forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+  }
+
+  @media (max-width:520px){
+    section{padding:76px 18px;}
+    .track{padding-left:30px;}
+    .stop-marker{left:-41px; width:28px; height:28px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="sun-bloom" id="sunBloom" aria-hidden="true"></div>
+  <div class="eyebrow">for Dwimu Rani Brahma</div>
+  <h1 class="display">Happy Birthday,<br>Shinyprince 🌻</h1>
+  <p class="sub script">a small journey through us, made just for you</p>
+  <div class="scroll-cue"><span>scroll</span><span class="arrow"></span></div>
+</section>
+
+<!-- OPENING NOTE -->
+<section class="opening reveal">
+  <div class="section-label">before we begin</div>
+  <h2 class="title">Ek chhoti si baat</h2>
+  <p class="body-text">Aaj ke din, main chahta hoon ki tum ek pal ke liye ruko, saans lo, aur mehsoos karo ki tum kitni khaas ho. Yeh koi bada gift nahi hai &mdash; bas hamari kahani hai, wahi kahani jo ek train se shuru hui thi, aur ab tak chal rahi hai.</p>
+  <p class="shayari">Kuch log zindagi mein achanak aate hain,<br>aur dil ko apna ghar bana jaate hain.<br>Tum bhi kuch aisi hi ho, Shinyprince,<br>bin bataye, sab kuch sikha jaati ho.</p>
+</section>
+
+<!-- JOURNEY / TRAIN TIMELINE -->
+<section class="journey reveal">
+  <div class="section-label">hamari shuruaat</div>
+  <h2 class="title">Wo do stations, jaha se sab shuru hua</h2>
+  <p class="body-text">Click karo har station pe, wahi memory khulegi.</p>
+
+  <div class="track">
+    <div class="stop">
+      <div class="stop-marker" data-stop="1">💬</div>
+      <div class="stop-date">28 August 2023 · raat ke waqt</div>
+      <div class="stop-title" data-stop="1">Pehli baat &mdash; sirf ek chat se shuru hua sab</div>
+      <div class="stop-hint">tap to open</div>
+      <div class="stop-body" id="body-1">
+        <p class="body-text">Ek raat, bina kisi plan ke, humari pehli baat hui. Na koi bada intro, na koi filmy shuruaat &mdash; bas ek normal si raat, jo baad mein sabse yaadgar raat ban gayi. Uss din pata nahi tha ki ek chat, poori zindagi badal degi.</p>
+        <p class="shayari">Raat ke andhere mein, jab sab so jaate hain,<br>tumhari ek baat se, sitare jag jaate hain.<br>28 August ki wo raat, kaise bhoolun main &mdash;<br>usi din se toh, dil ka safar shuru hota hai.</p>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-marker" data-stop="2">🚂</div>
+      <div class="stop-date">7 September 2023 · Rangia Station</div>
+      <div class="stop-title" data-stop="2">Ghy se Delhi &mdash; jaha maine tumhe pehli baar dekha</div>
+      <div class="stop-hint">tap to open</div>
+      <div class="stop-body" id="body-2">
+        <p class="body-text">Hum dono ek hi train mein baithe the, Guwahati se Delhi, ek bilkul nayi zindagi ki taraf &mdash; college, ek naya shehar, ek naya phase. Rangia station pe, maine tumhe pehli baar apne family ke saath dekha. Bas ek jhalak thi, lekin usne kuch aisa keh diya jo shabdon mein nahi tha.</p>
+        <p class="body-text">Uss din humein nahi pata tha ki yeh train sirf Delhi tak nahi, balki ek dusre tak leke jaayegi.</p>
+        <p class="shayari">Rangia station pe utri thi tum, apnon ke saath,<br>main dekhta reh gaya, thaam ke apni saans.<br>Ek nayi zindagi ka safar shuru hua tha us din,<br>pata nahi tha, tum hi manzil ho &mdash; yeh raaz khula tha phir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section class="finale reveal">
+  <div class="section-label" style="justify-content:center;">last stop</div>
+  <h2 class="title display"> just love you </h2>
+  <p class="body-text" style="margin:0 auto;">  &mdash; </p>
+  <button class="reveal-btn" id="openWish"> 🌻</button>
+</section>
+
+<!-- FULL SCREEN VIDEO AT THE END -->
+<div class="full-video-section">
+  <video autoplay muted playsinline loop>
+    <source src="ig-reel.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<footer>made with stones from the valley &mdash; for my Shinyprince</footer>
+
+<!-- WISH OVERLAY -->
+<div class="wish-overlay" id="wishOverlay">
+  <div class="wish-card">
+    <button class="wish-close" id="closeWish" aria-label="close">✕</button>
+    <h3 class="display">Happy Birthday 🌻</h3>
+    <p>Happy Birthday to the most incredible person in my world.
+
+Today isn't just about celebrating another year of your life; it’s about celebrating the absolute best thing that has ever happened to me—you.
+
+From the moment you came into my life, everything became a little brighter, a little warmer, and infinitely more meaningful. Your laugh is my favorite sound, your smile can completely turn around my hardest days, and the way you care for the people around you makes me fall in love with you more and more every single day.
+
+You have a heart of gold, a mind that endlessly inspires me, and a beauty that takes my breath away, inside and out. Being loved by you is the greatest gift I could ever ask for, and loving you is the easiest and most natural thing I have ever done.
+
+My dearest wish for you today, and for every day to come, is that you feel even a fraction of the immense joy, warmth, and adoration that you bring to everyone else's life. May this year bring you closer to your biggest dreams, fill your days with endless laughter, and remind you just how deeply cherished you are.
+
+I am so endlessly lucky to call you mine. Let's make today unforgettable.
+
+Happy Birthday, my love</p>
+    <p class="wish-sign">&mdash; Abrar, tumhara hamesha</p>
+  </div>
+</div>
+
+<script>
+  // build sunflower petals
+  const bloom = document.getElementById('sunBloom');
+  const petalCount = 12;
+  for(let i=0;i<petalCount;i++){
+    const p = document.createElement('div');
+    p.className='petal';
+    const angle = (360/petalCount)*i;
+    p.style.transform = `translate(-50%,-100%) rotate(${angle}deg)`;
+    p.style.animation = `pop-in .9s cubic-bezier(.2,1.4,.4,1) both`;
+    p.style.animationDelay = (i*0.04)+'s';
+    bloom.appendChild(p);
+  }
+  const disc = document.createElement('div');
+  disc.className='center-disc';
+  bloom.appendChild(disc);
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // timeline toggles
+  document.querySelectorAll('[data-stop]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.getAttribute('data-stop');
+      const body = document.getElementById('body-'+id);
+      const marker = document.querySelector(`.stop-marker[data-stop="${id}"]`);
+      const isOpen = body.classList.toggle('open');
+      marker.classList.toggle('open', isOpen);
+    });
+  });
+
+  // wish overlay
+  const overlay = document.getElementById('wishOverlay');
+  document.getElementById('openWish').addEventListener('click', ()=>{
+    overlay.classList.add('show');
+    spawnPetals();
+  });
+  document.getElementById('closeWish').addEventListener('click', ()=> overlay.classList.remove('show'));
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.classList.remove('show'); });
+
+  function spawnPetals(){
+    const emojis = ['🌻','💛','✨'];
+    for(let i=0;i<26;i++){
+      setTimeout(()=>{
+        const el = document.createElement('div');
+        el.className='petal-fall';
+        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        el.style.left = Math.random()*100+'vw';
+        const dur = 3+Math.random()*2.5;
+        el.style.animationDuration = dur+'s';
+        el.style.fontSize = (0.8+Math.random()*0.9)+'rem';
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(), dur*1000+200);
+      }, i*90);
+    }
+  }
+</script>
+</body>
+</html>
