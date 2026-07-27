@@ -381,11 +381,16 @@ Happy Birthday, my love</p>
   });
 
   // wish overlay
+// wish overlay
   const overlay = document.getElementById('wishOverlay');
+  const bgVideo = document.querySelector('.full-video-section video');
   document.getElementById('openWish').addEventListener('click', ()=>{
     overlay.classList.add('show');
     spawnPetals();
+    bgVideo.muted = false;
+    bgVideo.play().catch(()=>{});
   });
+  
   document.getElementById('closeWish').addEventListener('click', ()=> overlay.classList.remove('show'));
   overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.classList.remove('show'); });
 
